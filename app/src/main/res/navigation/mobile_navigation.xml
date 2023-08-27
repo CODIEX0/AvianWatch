@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <activity
+        android:id="@+id/activity_Register"
+        android:name="com.example.avianwatch.RegisterActivity"
+        android:label="Sign Up"
+        tools:layout="@layout/activity_register"/>
+
+
+    <activity
+        android:id="@+id/activity_Login"
+        android:name="com.example.avianwatch.LoginActivity"
+        android:label="Sign In"
+        tools:layout="@layout/activity_login"/>
+
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.avianwatch.fragments.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" >
+
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_bird_facts"
+            app:destination="@id/navigation_bird_facts" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_go_birding"
+            app:destination="@id/navigation_go_birding" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_view_birds"
+            app:destination="@id/navigation_view_birds" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_identify_bird"
+            app:destination="@id/navigation_identify_bird" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_blogs"
+            app:destination="@id/navigation_blogs" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_go_birding"
+        android:name="com.example.avianwatch.fragments.GoBirdingFragment"
+        android:label="Go Birding"
+        tools:layout="@layout/fragment_go_birding" />
+
+    <fragment
+        android:id="@+id/navigation_identify_bird"
+        android:name="com.example.avianwatch.fragments.ObservationFragment"
+        android:label="Identify Bird"
+        tools:layout="@layout/fragment_observation" />
+
+    <fragment
+        android:id="@+id/navigation_bird_facts"
+        android:name="com.example.avianwatch.fragments.BirdFactsFragment"
+        android:label="Bird Facts"
+        tools:layout="@layout/fragment_bird_facts">
+        <action
+            android:id="@+id/action_BirdFactsFragment_to_CommunityEngagementFragment"
+            app:destination="@id/navigation_blogs"
+            app:enterAnim="@anim/slide_in" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_view_birds"
+        android:name="com.example.avianwatch.fragments.ObservationListFragment"
+        android:label="Aviary"
+        tools:layout="@layout/fragment_observation_list" />
+
+    <fragment
+        android:id="@+id/navigation_blogs"
+        android:name="com.example.avianwatch.fragments.BlogsFragment"
+        android:label="Blogs"
+        tools:layout="@layout/fragment_blogs" />
+
+</navigation>
