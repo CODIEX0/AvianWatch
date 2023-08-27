@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn = "navigation_view"
+    >
+
+    <item
+        android:id="@+id/nav_go_birding"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:fontFamily="sans-serif-condensed-light"
+        android:title="Go Birding"/>
+    <item
+        android:id="@+id/nav_identify_bird"
+        android:icon="@drawable/search"
+        android:fontFamily="sans-serif-condensed-light"
+        android:title="Identify Bird"/>
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@mipmap/origami"
+        android:fontFamily="sans-serif-condensed-light"
+        android:title="Home"/>
+    <item
+        android:id="@+id/nav_view_birds"
+        android:icon="@drawable/aviary"
+        android:fontFamily="sans-serif-condensed-light"
+        android:title="Aviary"/>
+    <item
+        android:id="@+id/nav_bird_facts"
+		android:icon="@drawable/bird_facts"
+        android:fontFamily="sans-serif-condensed-light"
+        android:title="Bird Facts"/>
+
+</menu>
