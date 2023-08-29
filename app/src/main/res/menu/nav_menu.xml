@@ -4,38 +4,13 @@
     tools:showIn = "navigation_view">
 
     <group
-		android:checkableBehavior="single">
+        android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_bird_facts"
-            android:icon="@drawable/bird_facts"
-            android:fontFamily="sans-serif-condensed-light"
-            android:title="Random Bird Facts"/>
-
-        <item
-            android:id="@+id/nav_community_engagement"
+            android:id="@+id/navigation_blogs"
             android:icon="@drawable/blogs"
-            android:fontFamily="sans-serif-condensed-light"
-            android:title="Community Engagement"/>
-
-        <item
-            android:id="@+id/nav_About"
-            android:icon="@android:drawable/ic_dialog_info"
-            android:fontFamily="sans-serif-condensed-light"
-            android:title="About Avian Watch"/>
-
+            android:title="Community"
+            />
     </group>
-
-    <item
-        android:title="">
-        <menu>
-            <item
-                android:id="@+id/nav_Logout"
-                android:icon="@android:drawable/ic_menu_revert"
-                android:fontFamily="sans-serif-condensed-light"
-                android:title="Log Out"/>
-
-        </menu>
-    </item>
 
 </menu>
