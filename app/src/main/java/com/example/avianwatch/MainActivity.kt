@@ -4,12 +4,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.avianwatch.databinding.ActivityMainBinding
 import com.example.avianwatch.fragments.BirdFactsFragment
 import com.example.avianwatch.fragments.GoBirdingFragment
 import com.example.avianwatch.fragments.HomeFragment
@@ -21,14 +23,15 @@ import com.google.android.material.navigation.NavigationView
 class MainActivity : AppCompatActivity(), OnCardClickListener{
     //private lateinit var auth: FirebaseAuth
     private lateinit var bottomNav: BottomNavigationView
-    lateinit var drawerLayout: DrawerLayout
-    lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
-    lateinit var navView: NavigationView
+    private lateinit var txtTitle: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        txtTitle = findViewById(R.id.txtTitle)
+
+        //setup the bottom navigation bar
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
         bottomNav = findViewById(R.id.bottom_navigation)
@@ -39,30 +42,35 @@ class MainActivity : AppCompatActivity(), OnCardClickListener{
         val fragment = HomeFragment()
         replaceFragment(fragment)
 
+        //change the fragment every time the user presses a different bottom navigation button
         bottomNav.setOnNavigationItemSelectedListener { menuItem ->
             // By using switch we can easily get the
             // selected fragment by using the id
             lateinit var selectedFragment: Fragment
 
             when (menuItem.itemId) {
-
-                R.id.nav_go_birding -> {
-                    selectedFragment = GoBirdingFragment()
-                }
-
-                R.id.nav_identify_bird -> {
-                    selectedFragment = ObservationFragment()
-                }
-
                 R.id.nav_home -> {
+                    txtTitle.setText("Home")
                     selectedFragment = HomeFragment()
                 }
 
+                R.id.nav_identify_bird -> {
+                    txtTitle.setText("Add Observation")
+                    selectedFragment = ObservationFragment()
+                }
+
+                R.id.nav_go_birding -> {
+                    txtTitle.setText("Go Birding")
+                    selectedFragment = GoBirdingFragment()
+                }
+
                 R.id.nav_view_birds -> {
+                    txtTitle.setText("My Observations")
                     selectedFragment = ObservationListFragment()
                 }
 
                 R.id.nav_bird_facts -> {
+                    txtTitle.setText("Bird Facts")
                     selectedFragment = BirdFactsFragment()
                 }
 
@@ -72,11 +80,10 @@ class MainActivity : AppCompatActivity(), OnCardClickListener{
             replaceFragment(selectedFragment)
 
             true
-
-
         }
     }
 
+    //method used to replace the current fragment with the fragment passed in the parameters
     private fun replaceFragment(fragment : Fragment){
 
         val fragmentManager = supportFragmentManager
