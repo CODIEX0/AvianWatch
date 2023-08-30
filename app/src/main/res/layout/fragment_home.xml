@@ -1,14 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="587dp"
-    tools:context=".fragments.HomeFragment">
+    android:layout_height="match_parent"
+    tools:context=".fragments.HomeFragment"
+    android:background="@color/background_color"
+    android:orientation="vertical"
+    android:weightSum="10">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_weight="2"
+        android:src="@mipmap/origami" />
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="2dp"
+        android:background="@color/text_color" />
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/show_distance_in"
+                android:textColor="@color/text_color"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/buttonGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/miles"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/kilometers"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp" />
+            </RadioGroup>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/text_color" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <Button
+                android:layout_width="194dp"
+                android:layout_height="77dp"
+                android:text="@string/go_birding"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/background_color"
+                android:backgroundTint="@color/button_color"
+                android:layout_weight="1"/>
+
+
+            <Button
+                android:layout_width="194dp"
+                android:layout_height="77dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/identify_bird"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/background_color"
+                android:backgroundTint="@color/button_color"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <Button
+                android:layout_width="194dp"
+                android:layout_height="77dp"
+                android:text="@string/my_aviary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/background_color"
+                android:backgroundTint="@color/button_color"
+                android:layout_weight="1"/>
+
+
+            <Button
+                android:layout_width="194dp"
+                android:layout_height="77dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/bird_facts"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/background_color"
+                android:backgroundTint="@color/button_color"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <Button
+                android:layout_width="194dp"
+                android:layout_height="77dp"
+                android:text="@string/about_us"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/background_color"
+                android:backgroundTint="@color/button_color"
+                android:layout_weight="1"/>
+
+
+            <Button
+                android:layout_width="194dp"
+                android:layout_height="77dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/community"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/background_color"
+                android:backgroundTint="@color/button_color"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

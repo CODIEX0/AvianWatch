@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="587dp"
-    tools:context=".fragments.ObservationListFragment">
+    android:layout_height="match_parent"
+    tools:context=".fragments.ObservationListFragment"
+    android:background="@color/background_color"
+    android:orientation="vertical"
+    android:weightSum="2">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_weight="0.5"
+        android:src="@android:drawable/ic_menu_preferences" />
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+        android:layout_height="wrap_content"
+        android:text="Still Under Construction"
+        android:textFontWeight="400"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textSize="50sp"
+        android:textColor="@color/text_color"
+        android:layout_weight="1"
+        android:gravity="center|top"/>
+</androidx.appcompat.widget.LinearLayoutCompat>
