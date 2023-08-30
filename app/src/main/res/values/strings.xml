@@ -18,5 +18,24 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
+    <string name="go_birding">Go Birding</string>
+    <string name="my_aviary">My Aviary</string>
+    <string name="identify_bird">Identify Bird</string>
+    <string name="miles">Miles</string>
+    <string name="kilometers">Kilometers</string>
+    <string name="show_distance_in">Show Distance In:</string>
+    <string name="bird_facts">Bird Facts</string>
+    <string name="community">Community</string>
+    <string name="about_us">About Us</string>
+    <string name="like">Like</string>
+    <string name="share">Share</string>
+    <string name="blog_text">This birds like doing 10 - 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?</string>
+    <string name="reply">Reply</string>
+    <string name="take_a_picture">Take a Picture</string>
+    <string name="bird_name_species">Bird Name/species</string>
+    <string name="behavior">Behavior</string>
+    <string name="notes">Notes</string>
+    <string name="add_observation">Add Observation</string>
+    <string name="choose_max_search_distance">Choose Max search Distance</string>
 
 </resources>

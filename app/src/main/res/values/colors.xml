@@ -9,6 +9,7 @@
     <color name="card_background">#1A3E1A</color>
     <color name="navigationBar_text_color">#57000000</color>
     <color name="brand_light_blue">#00BFFF</color>
+    <color name="blog">#567580</color>
 
     <!-- Blue shades -->
     <color name="blue_dark">#002A4D</color>

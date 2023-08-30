@@ -15,7 +15,7 @@
         android:title="Aviary"/>
     <item
         android:id="@+id/nav_bird_facts"
-		android:icon="@drawable/bird_facts"
+		android:icon="@drawable/bird_fact"
         android:fontFamily="sans-serif-condensed-light"
         android:title="Bird Facts"/>
     <item
