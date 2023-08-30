@@ -1,14 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="587dp"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#A8E2FB"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
     tools:context=".fragments.BirdFactsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <ImageView
+        android:id="@+id/fact_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/fact_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color"
+        android:background="@color/background_color"
+        android:textStyle="bold"
+        android:gravity="top"
+        android:text="Birds seem to pay more attention to fine acoustic details that humans cannot hear than to the melodies that captivate us."
+        android:textSize="18sp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        >
+
+        <Button
+            android:id="@+id/fact_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/button_color"
+            android:textColor="@color/background_color"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Next Fact"
+            app:cornerRadius="20dp"/>
+
+
+        <Button
+            android:id="@+id/share_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="180dp"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/button_color"
+            android:text="Share"
+            android:textColor="@color/background_color"
+            app:cornerRadius="20dp" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
