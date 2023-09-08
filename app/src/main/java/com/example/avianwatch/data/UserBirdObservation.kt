@@ -6,6 +6,7 @@ import java.util.UUID
 data class UserBirdObservation(
     val observationId: UUID,
     val birdSpecies: String,
+    val birdImage: String?,
     val observationDateTime: Date,
     val locationLatitude: Double,
     val locationLongitude: Double,

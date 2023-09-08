@@ -10,7 +10,7 @@
         android:title="Home"/>
     <item
         android:id="@+id/nav_view_birds"
-        android:icon="@drawable/aviary"
+        android:icon="@drawable/bird_house"
         android:fontFamily="sans-serif-condensed-light"
         android:title="Aviary"/>
     <item
@@ -24,9 +24,8 @@
         android:fontFamily="sans-serif-condensed-light"
         android:title="Go Birding"/>
     <item
-        android:id="@+id/nav_identify_bird"
-        android:icon="@drawable/search"
+        android:id="@+id/nav_blogs"
+        android:icon="@drawable/blogs"
         android:fontFamily="sans-serif-condensed-light"
-        android:title="Identify Bird"/>
-
+        android:title="Blogs"/>
 </menu>

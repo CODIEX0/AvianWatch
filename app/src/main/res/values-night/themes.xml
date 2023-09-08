@@ -1,7 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.AvianWatch" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/blue_dark</item>
+        <item name="android:statusBarColor">#263E4A</item>
     </style>
+
+    <style name="Theme.AvianWatch" parent="Base.Theme.AvianWatch" />
 </resources>

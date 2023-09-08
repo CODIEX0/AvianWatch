@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="170dp"
     app:cardElevation="30dp"
     app:cardCornerRadius="15dp"
     android:layout_margin="16dp"
@@ -11,18 +11,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="@color/text_color">
+        android:layout_height="170dp"
+        android:background="#597AB3">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgPlantImage"
+            android:id="@+id/imgBirdImage"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:background="@android:drawable/ic_menu_gallery"
-            android:padding="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="36dp"
+            android:padding="1dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/circular"
             app:strokeColor="@color/background_color"
             app:strokeWidth="2dp"
             tools:visibility="visible">
@@ -40,18 +40,19 @@
             android:textColor="@color/background_color"
             android:textFontWeight="600"
             android:textSize="15sp"
-            app:layout_constraintStart_toEndOf="@+id/imgPlantImage"
+            app:layout_constraintStart_toEndOf="@+id/imgBirdImage"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvPlantName"
+            android:id="@+id/tvBirdName"
             android:layout_width="195dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:fontFamily="sans-serif-condensed-light"
-            android:textFontWeight="600"
+            android:text="Flamingo"
             android:textColor="@color/background_color"
+            android:textFontWeight="600"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/tvpn"
             app:layout_constraintTop_toTopOf="parent" />
@@ -67,48 +68,79 @@
             android:textColor="@color/background_color"
             android:textFontWeight="600"
             android:textSize="15sp"
-            app:layout_constraintStart_toEndOf="@+id/imgPlantImage"
-            app:layout_constraintTop_toBottomOf="@+id/tvPlantName" />
+            app:layout_constraintStart_toEndOf="@+id/imgBirdImage"
+            app:layout_constraintTop_toBottomOf="@+id/tvBirdName" />
 
         <TextView
             android:id="@+id/tvDateObserved"
-            android:layout_width="195dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_width="186dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:fontFamily="sans-serif-condensed-light"
+            android:text="20 April 2023 - 14:35"
             android:textColor="@color/background_color"
             android:textFontWeight="600"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/tvps"
-            app:layout_constraintTop_toBottomOf="@+id/tvPlantName" />
+            app:layout_constraintTop_toBottomOf="@+id/tvBirdName" />
 
         <TextView
             android:id="@+id/tvpsm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="52dp"
             android:fontFamily="sans-serif-condensed-light"
             android:text="Location: "
             android:textColor="@color/background_color"
             android:textFontWeight="600"
             android:textSize="15sp"
-            app:layout_constraintStart_toEndOf="@+id/imgPlantImage"
-            app:layout_constraintTop_toBottomOf="@+id/tvPlantName" />
+            app:layout_constraintStart_toEndOf="@+id/imgBirdImage"
+            app:layout_constraintTop_toBottomOf="@+id/tvBirdName" />
 
         <TextView
-            android:id="@+id/tvRegion"
-            android:layout_width="185dp"
+            android:id="@+id/txtLocation"
+            android:layout_width="187dp"
             android:layout_height="38dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="52dp"
             android:fontFamily="sans-serif-condensed-light"
+            android:text="Midrand, Glen Austin"
             android:textColor="@color/background_color"
             android:textFontWeight="600"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/tvps"
-            app:layout_constraintTop_toBottomOf="@+id/tvPlantName" />
+            app:layout_constraintTop_toBottomOf="@+id/tvBirdName" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="92dp"
+            android:fontFamily="sans-serif-condensed-light"
+            android:text="@string/notes_cardview"
+            android:textColor="@color/background_color"
+            android:textFontWeight="600"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@+id/imgBirdImage"
+            app:layout_constraintTop_toBottomOf="@+id/tvBirdName" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="188dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif-condensed-light"
+            android:text="@string/a_pair_of_flamingos_they_looked_liked_they_were_mating"
+            android:textColor="@color/background_color"
+            android:textFontWeight="600"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/txtLocation" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
