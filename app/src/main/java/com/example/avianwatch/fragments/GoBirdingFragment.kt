@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
+import com.example.avianwatch.databinding.ActivityMainBinding
+import com.example.avianwatch.databinding.FragmentGoBirdingBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,7 +38,35 @@ class GoBirdingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_go_birding, container, false)
+        val binding = FragmentGoBirdingBinding.inflate(inflater, container, false)
+
+        // go to the settings fragment
+        binding.ibSettings.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("Settings")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val settingsFragment = SettingsFragment()
+            fragmentTransaction.replace(R.id.fragment_container, settingsFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) //add to back stack
+            fragmentTransaction.commit()
+        }
+
+        // go to the add observation fragment
+        binding.ibAddObservation.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("Add Observation")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val observationFragment = ObservationFragment()
+            fragmentTransaction.replace(R.id.fragment_container, observationFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) //add to back stack
+            fragmentTransaction.commit()
+        }
+
+        return binding.root
     }
 
     companion object {

@@ -4,12 +4,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="rc">#4DB5C6A9</color>
     <color name="text_color">#021A57</color>
-    <color name="background_color">#BADCED</color>
+    <color name="background_color">#D0EDFB</color>
     <color name="button_color">#002991</color>
     <color name="card_background">#1A3E1A</color>
     <color name="navigationBar_text_color">#57000000</color>
     <color name="brand_light_blue">#00BFFF</color>
-    <color name="blog">#567580</color>
+    <color name="blog">#879FA8</color>
 
     <!-- Blue shades -->
     <color name="blue_dark">#002A4D</color>

@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
+import com.example.avianwatch.databinding.ActivityMainBinding
+import com.example.avianwatch.databinding.FragmentHomeBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +25,8 @@ class HomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -34,8 +39,84 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        //change fragments using the card views
+        binding.cvGoBirding.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("Go Birding")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val goBirdingFragment = GoBirdingFragment()
+            fragmentTransaction.replace(R.id.fragment_container, goBirdingFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) // add to back stack
+            fragmentTransaction.commit()
+        }
+
+        binding.cvAddObservation.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("Add Observation")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val observationFragment = ObservationFragment()
+            fragmentTransaction.replace(R.id.fragment_container, observationFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) //add to back stack
+            fragmentTransaction.commit()
+        }
+
+        binding.cvMyAviary.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("My Observations")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val myAviaryFragment = ObservationListFragment()
+            fragmentTransaction.replace(R.id.fragment_container, myAviaryFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) //add to back stack
+            fragmentTransaction.commit()
+        }
+
+        binding.cvBirdFacts.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("Bird Facts")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val birdFactsFragment = BirdFactsFragment()
+            fragmentTransaction.replace(R.id.fragment_container, birdFactsFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) //add to back stack
+            fragmentTransaction.commit()
+        }
+
+        binding.cvSettings.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("Settings")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val settingsFragment = SettingsFragment()
+            fragmentTransaction.replace(R.id.fragment_container, settingsFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) //add to back stack
+            fragmentTransaction.commit()
+        }
+
+        binding.cvCommunity.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("Blogs")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val blogsFragment = BlogsFragment()
+            fragmentTransaction.replace(R.id.fragment_container, blogsFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) //add to back stack
+            fragmentTransaction.commit()
+        }
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return binding.root
     }
 
     companion object {

@@ -14,6 +14,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.avianwatch.databinding.ActivityMainBinding
 import com.example.avianwatch.fragments.BirdFactsFragment
+import com.example.avianwatch.fragments.BlogsFragment
 import com.example.avianwatch.fragments.GoBirdingFragment
 import com.example.avianwatch.fragments.HomeFragment
 import com.example.avianwatch.fragments.ObservationFragment
@@ -22,9 +23,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), OnCardClickListener{
-    //private lateinit var auth: FirebaseAuth
     private lateinit var bottomNav: BottomNavigationView
-    private lateinit var txtTitle: TextView
+    lateinit var txtTitle: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,31 +51,32 @@ class MainActivity : AppCompatActivity(), OnCardClickListener{
 
             when (menuItem.itemId) {
                 R.id.nav_home -> {
-                    txtTitle.setText("Home")
+                    updateTitle("Dashboard")
                     selectedFragment = HomeFragment()
                 }
 
-                R.id.nav_identify_bird -> {
-                    txtTitle.setText("Add Observation")
-                    selectedFragment = ObservationFragment()
-                }
-
                 R.id.nav_go_birding -> {
-                    txtTitle.setText("Go Birding")
+                    updateTitle("Go Birding")
                     selectedFragment = GoBirdingFragment()
                 }
 
                 R.id.nav_view_birds -> {
-                    txtTitle.setText("My Observations")
+                    updateTitle("My Observations")
                     selectedFragment = ObservationListFragment()
                 }
 
+                R.id.nav_blogs -> {
+                    updateTitle("Blogs")
+                    selectedFragment = BlogsFragment()
+                }
+
                 R.id.nav_bird_facts -> {
-                    txtTitle.setText("Bird Facts")
+                    updateTitle("Bird Facts")
                     selectedFragment = BirdFactsFragment()
                 }
 
             }
+
             // replace the current fragment
             // to the selected fragment.
             replaceFragment(selectedFragment)
@@ -84,12 +85,17 @@ class MainActivity : AppCompatActivity(), OnCardClickListener{
         }
     }
 
+    fun updateTitle(newText: String) {
+        txtTitle.text = newText
+    }
+
     //method used to replace the current fragment with the fragment passed in the parameters
     private fun replaceFragment(fragment : Fragment){
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container,fragment)
+        fragmentTransaction.addToBackStack(null) // add to back stack
         fragmentTransaction.commit()
     }
 

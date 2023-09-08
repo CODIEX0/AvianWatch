@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="sans-serif-condensed-light"
-            android:text="@string/home"
+            android:text="@string/dashboard"
             android:textColor="@color/background_color"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -55,7 +55,7 @@
         android:background="@color/button_color"
         android:backgroundTint="#011957"
         app:itemIconTint="@drawable/nav_selector"
-        app:itemTextColor="#011957"
+        app:itemTextColor="@color/background_color"
         app:labelVisibilityMode="labeled"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
