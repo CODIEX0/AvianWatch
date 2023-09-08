@@ -15,8 +15,6 @@
     <string name="user_name">User Name</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="title">Title</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="go_birding">Go Birding</string>
     <string name="my_aviary">My Aviary</string>
@@ -29,13 +27,17 @@
     <string name="about_us">About Us</string>
     <string name="like">Like</string>
     <string name="share">Share</string>
-    <string name="blog_text">This birds like doing 10 - 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?</string>
+    <string name="blog_text">This birds like doing 10 – 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?</string>
     <string name="reply">Reply</string>
     <string name="take_a_picture">Take a Picture</string>
     <string name="bird_name_species">Bird Name/species</string>
     <string name="behavior">Behavior</string>
     <string name="notes">Notes</string>
     <string name="add_observation">Add Observation</string>
-    <string name="choose_max_search_distance">Choose Max search Distance</string>
+    <string name="choose_max_search_distance">Choose The Max Search Distance</string>
+    <string name="notes_cardview">Notes:</string>
+    <string name="a_pair_of_flamingos_they_looked_liked_they_were_mating">A pair of Flamingos, they looked liked they were mating.</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="blog">Blog</string>
 
 </resources>

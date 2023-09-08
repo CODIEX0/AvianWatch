@@ -5,16 +5,20 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp"
-    android:background="#C5E5F3"
-    tools:context=".fragments.BirdFactsFragment">
+    android:padding="5dp"
+    android:background="@color/background_color"
+    tools:context=".fragments.BirdFactsFragment"
+    android:weightSum="10">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/fact_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"/>
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="5"
+        app:strokeColor="@color/text_color"
+        app:strokeWidth="10dp"
+        tools:visibility="visible"/>
+
 
     <TextView
         android:id="@+id/fact_text_view"
@@ -23,7 +27,6 @@
         android:textColor="@color/text_color"
         android:background="@color/background_color"
         android:textStyle="bold"
-        android:gravity="top"
         android:text="Birds seem to pay more attention to fine acoustic details that humans cannot hear than to the melodies that captivate us."
         android:textSize="18sp"
         />
@@ -32,32 +35,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="center"
+        android:gravity="bottom"
+        android:layout_weight="5"
         >
 
         <Button
-            android:id="@+id/fact_button"
+            android:id="@+id/share_button"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/button_color"
+            android:drawableEnd="@drawable/baseline_share_24"
+            android:gravity="center"
+            android:text="Share"
+            android:textColor="@color/background_color"
+            app:cornerRadius="20dp" />
+
+        <Button
+            android:id="@+id/btn_next_fact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="140dp"
             android:backgroundTint="@color/button_color"
             android:textColor="@color/background_color"
             android:gravity="center"
+            android:drawableEnd="@drawable/baseline_next_plan_24"
             android:layout_marginTop="16dp"
             android:text="Next Fact"
             app:cornerRadius="20dp"/>
 
-
-        <Button
-            android:id="@+id/share_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="180dp"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/button_color"
-            android:text="Share"
-            android:textColor="@color/background_color"
-            app:cornerRadius="20dp" />
 
     </LinearLayout>
 

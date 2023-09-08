@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.ObservationListFragment"
-    android:background="@color/background_color"
-    android:orientation="vertical"
-    android:weightSum="2">
+    android:background="@color/background_color">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:layout_weight="0.5"
-        android:src="@android:drawable/ic_menu_preferences" />
-    <TextView
+    <view class="androidx.recyclerview.widget.RecyclerView"
+        android:id="@+id/rvObservationList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Still Under Construction"
-        android:textFontWeight="400"
-        android:fontFamily="sans-serif-condensed-light"
-        android:textSize="50sp"
-        android:textColor="@color/text_color"
-        android:layout_weight="1"
-        android:gravity="center|top"/>
-</androidx.appcompat.widget.LinearLayoutCompat>
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_observation">
+
+    </view>
+
+    <ImageButton
+        android:id="@+id/ibAddObservation"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:backgroundTint="@color/blue_dark"
+        android:background="@drawable/create_button"
+        android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
