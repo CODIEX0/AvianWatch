@@ -4,11 +4,11 @@ import java.util.Date
 import java.util.UUID
 
 data class UserBirdObservation(
-    val observationId: UUID,
+    val userUID: String? = null,
+    val uuid: UUID,
     val birdSpecies: String,
     val birdImage: String?,
     val observationDateTime: Date,
-    val locationLatitude: Double,
-    val locationLongitude: Double,
+    val location: String,
     val additionalNotes: String
 )

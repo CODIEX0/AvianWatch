@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -30,6 +31,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
     buildFeatures{
         viewBinding true
     }
@@ -49,4 +51,10 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.ext.junit
     androidTestImplementation libs.espresso.core
+
+    //firebase Libraries
+    implementation platform('com.google.firebase:firebase-bom:32.1.0')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
+    implementation 'com.google.firebase:firebase-storage:20.2.1'
 }

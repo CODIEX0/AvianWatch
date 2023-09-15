@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.AvianWatch" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/brand_light_blue</item>
-        <item name="android:statusBarColor">@color/background_color</item>
+        <item name="colorPrimary">@color/blue_dark</item>
+        <item name="android:statusBarColor">#263E4A</item>
     </style>
 
     <style name="Theme.AvianWatch" parent="Base.Theme.AvianWatch" />

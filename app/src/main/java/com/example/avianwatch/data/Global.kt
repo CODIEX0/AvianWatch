@@ -10,12 +10,12 @@ import java.util.UUID
 
 //Singleton class for storing live data
 object Global {
-    var userSettingsData: UserSettingsData? = null
-    var appPreferencesData: AppPreferencesData? = null
-    var userAuthenticationData: UserAuthenticationData? = null
+    var currentUser: User? = null
+    var userPreferences: UserPreferences? = null
     var hotspotsData: MutableList<HotspotData> = mutableListOf()
     var routeData: RouteData? = null
     var stepDataList: MutableList<StepData> = mutableListOf()
+    var users: MutableList<User> = mutableListOf()
 
     //list of bird facts with corresponding image resource IDs
     val birdFactsList = listOf(
@@ -68,6 +68,4 @@ object Global {
             R.drawable.peregrine_falcon
         )
     )
-
-    var currentUser: User? = null
 }
