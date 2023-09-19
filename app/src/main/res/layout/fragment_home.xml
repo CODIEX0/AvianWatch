@@ -48,7 +48,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/hotspots"/>
+                    android:src="@mipmap/hotspots"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
                     android:layout_gravity="center_horizontal"
                     android:textSize="18dp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/background_color"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -84,7 +84,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/observation"/>
+                    android:src="@mipmap/observation"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -123,7 +123,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/bird_house"/>
+                    android:src="@mipmap/bird_house"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -159,14 +159,14 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/bird_fact"/>
+                    android:src="@mipmap/bird_fact"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bird Facts"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="18dp"
+                    android:textSize="17dp"
                     android:textStyle="bold"
                     android:textColor="@color/background_color"/>
             </LinearLayout>
@@ -196,7 +196,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/settings"/>
+                    android:src="@mipmap/settings"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -232,7 +232,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/blog"/>
+                    android:src="@mipmap/post"/>
 
                 <TextView
                     android:layout_width="wrap_content"

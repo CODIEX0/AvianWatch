@@ -5,27 +5,27 @@
     >
     <item
         android:id="@+id/nav_home"
-        android:icon="@mipmap/origami"
+        android:icon="@drawable/baseline_dashboard_24"
         android:fontFamily="sans-serif-condensed-light"
-        android:title="Home"/>
+        android:title="Dashboard"/>
     <item
         android:id="@+id/nav_view_birds"
-        android:icon="@drawable/bird_house"
+        android:icon="@mipmap/bird_house"
         android:fontFamily="sans-serif-condensed-light"
-        android:title="Aviary"/>
+        android:title="My Aviary"/>
     <item
         android:id="@+id/nav_bird_facts"
-		android:icon="@drawable/bird_fact"
+		android:icon="@mipmap/bird_fact"
         android:fontFamily="sans-serif-condensed-light"
         android:title="Bird Facts"/>
     <item
         android:id="@+id/nav_go_birding"
         android:icon="@android:drawable/ic_dialog_map"
         android:fontFamily="sans-serif-condensed-light"
-        android:title="Go Birding"/>
+        android:title="Explore"/>
     <item
         android:id="@+id/nav_blogs"
-        android:icon="@drawable/blogs"
+        android:icon="@mipmap/posts"
         android:fontFamily="sans-serif-condensed-light"
-        android:title="Blogs"/>
+        android:title="Community"/>
 </menu>

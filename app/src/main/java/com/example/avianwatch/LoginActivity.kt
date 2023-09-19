@@ -32,15 +32,37 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         userDatabaseReference = FirebaseDatabase.getInstance().getReference("User")
 
-        binding.btnSignUp.setOnClickListener {
+        binding.txtSignUp.setOnClickListener {
             val signupIntent = Intent(this, RegisterActivity::class.java)
             startActivity(signupIntent)
         }
 
-        binding.btnSignIn.setOnClickListener {
+        binding.txtForgotPass.setOnClickListener {
             val email = binding.edtEmail.text.toString()
-            val password = binding.etPassWord.text.toString()
-            validateLogin(email, password)
+
+            if (email.isNotEmpty()) {
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Password reset email sent successfully
+                            Toast.makeText(this, "Password reset email sent", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // Password reset email sending failed
+                            Toast.makeText(this, "Password reset failed. Please check your email.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            } else {
+                // Handle the case where the email field is empty
+                Toast.makeText(this, "Please enter your email address", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnSignIn.setOnClickListener {
+            //val email = binding.edtEmail.text.toString()
+            //val password = binding.etPassWord.text.toString()
+            //validateLogin(email, password)
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
 
         val imgIcon: ImageView = findViewById(R.id.imgIcon)
@@ -50,6 +72,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun validateLogin(email: String, password: String) {
         if (email.isBlank() || password.isBlank()) {
+            Toast.makeText(this@LoginActivity, "Empty email or password", Toast.LENGTH_SHORT).show()
             Log.d("LoginActivity", "Empty email or password")
             return
         }

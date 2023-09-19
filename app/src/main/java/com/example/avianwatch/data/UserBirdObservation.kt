@@ -8,7 +8,7 @@ data class UserBirdObservation(
     val uuid: UUID,
     val birdSpecies: String,
     val birdImage: String?,
-    val observationDateTime: Date,
+    val observationDateTime: String?,
     val location: String,
     val additionalNotes: String
 )

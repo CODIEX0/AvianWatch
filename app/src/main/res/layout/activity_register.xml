@@ -25,8 +25,8 @@
 
     <ImageView
         android:id="@+id/imgIcon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         tools:srcCompat="@mipmap/origami"
         android:layout_gravity="center"/>
 
@@ -176,27 +176,24 @@
         android:layout_marginTop="20dp"
         android:layout_width="200dp"
         android:layout_height="58dp"
-        android:textFontWeight="400"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="23sp"
+        android:textStyle="bold"
         android:backgroundTint="@color/button_color"
         android:layout_gravity="center"
         android:fontFamily="sans-serif-condensed-light"
         android:text="@string/sign_up"
         app:cornerRadius="25dp" />
 
-    <Button
-        android:id="@+id/btnSignIn"
-        android:layout_marginTop="5dp"
-        android:layout_width="180dp"
-        android:layout_height="58dp"
-        android:textFontWeight="400"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:backgroundTint="@color/button_color"
+    <TextView
+        android:id="@+id/txtSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:fontFamily="sans-serif-condensed-light"
-        android:text="@string/sign_in"
-        app:cornerRadius="25dp" />
+        android:text="@string/already_have_an_account_sign_in"
+        android:layout_marginTop="5sp"
+        android:textColor="@color/text_color"
+        android:textSize="17sp"
+        android:layout_marginBottom="5sp"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

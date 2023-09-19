@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:background="#597AB3">
+        android:background="#DA021A57">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgBirdImage"

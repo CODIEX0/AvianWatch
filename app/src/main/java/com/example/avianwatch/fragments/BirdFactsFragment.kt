@@ -21,8 +21,6 @@ class BirdFactsFragment : Fragment() {
     private lateinit var factTextView: TextView
     private lateinit var factImageView: ImageView
 
-    private var currentFactIndex = 0
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,19 +31,22 @@ class BirdFactsFragment : Fragment() {
         factImageView = binding.factImageView
 
         val mainActivity = activity as MainActivity
-        mainActivity.updateTitle("Bird Facts")
+        mainActivity.updateTitle("Random Bird Facts")
 
         // Show a random fact when the fragment is created
         showRandomFact()
 
-
-        // Set a click listener for the button to show the next fact
         binding.btnNextFact.setOnClickListener {
             showRandomFact()
         }
 
-        binding.shareButton.setOnClickListener {
+        binding.btnShare.setOnClickListener {
             Toast.makeText(requireContext(),"Fact Shared Successfully", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.btnPosts.setOnClickListener {
+            mainActivity.updateTitle("Posts")
+            replaceFragment(PostsFragment())
         }
 
         return binding.root
@@ -60,6 +61,13 @@ class BirdFactsFragment : Fragment() {
         val fact = Global.birdFactsList[index]
         factTextView.text = fact.fact
         factImageView.setImageResource(fact.image)
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, fragment) // replace with the new fragment
+        fragmentTransaction.addToBackStack(null) //add to back stack
+        fragmentTransaction.commit()
     }
 
 }

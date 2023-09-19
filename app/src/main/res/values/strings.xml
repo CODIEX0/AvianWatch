@@ -27,7 +27,7 @@
     <string name="about_us">About Us</string>
     <string name="like">Like</string>
     <string name="share">Share</string>
-    <string name="blog_text">This birds like doing 10 – 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?</string>
+    <string name="blog_text">These birds like doing 10 – 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?</string>
     <string name="reply">Reply</string>
     <string name="take_a_picture">Take a Picture</string>
     <string name="bird_name_species">Bird Name/species</string>
@@ -38,7 +38,11 @@
     <string name="notes_cardview">Notes:</string>
     <string name="a_pair_of_flamingos_they_looked_liked_they_were_mating">A pair of Flamingos, they looked liked they were mating.</string>
     <string name="dashboard">Dashboard</string>
-    <string name="blog">Blog</string>
+    <string name="blog">Community</string>
     <string name="imperial_miles">Imperial (Miles)</string>
+    <string name="remember_me">Remember me?</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="already_have_an_account_sign_in">Already have an account? Sign In</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign Up</string>
 
 </resources>

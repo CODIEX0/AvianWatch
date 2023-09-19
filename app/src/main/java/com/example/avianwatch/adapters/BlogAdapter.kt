@@ -7,10 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.R
-import com.example.avianwatch.data.BlogItem
+import com.example.avianwatch.data.PostItem
 import com.example.avianwatch.data.Image
 
-class BlogAdapter(private val blogs: List<BlogItem>) : RecyclerView.Adapter<BlogAdapter.BlogViewHolder>() {
+class BlogAdapter(private val blogs: List<PostItem>) : RecyclerView.Adapter<BlogAdapter.BlogViewHolder>() {
 
     inner class BlogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -18,7 +18,7 @@ class BlogAdapter(private val blogs: List<BlogItem>) : RecyclerView.Adapter<Blog
         val text: TextView = itemView.findViewById(R.id.txtText)
         val blog_image: ImageView = itemView.findViewById(R.id.imgBirdImage)
 
-        fun bind(blog: BlogItem) {
+        fun bind(blog: PostItem) {
             user_name.text = blog.txtUserName
             text.text = blog.txtText
             if (blog.imgBlogImage.equals("")) {
@@ -42,7 +42,7 @@ class BlogAdapter(private val blogs: List<BlogItem>) : RecyclerView.Adapter<Blog
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlogViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_blog, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
         return BlogViewHolder(view)
     }
 
@@ -55,15 +55,15 @@ class BlogAdapter(private val blogs: List<BlogItem>) : RecyclerView.Adapter<Blog
         return blogs.size
     }
 
-    fun updateBlogList(blogList: List<BlogItem>) {
-        var list: MutableList<BlogItem> = blogList.toMutableList()
+    fun updateBlogList(blogList: List<PostItem>) {
+        var list: MutableList<PostItem> = blogList.toMutableList()
         list.clear()
         list.addAll(blogList)
         notifyDataSetChanged()
     }
 
     interface OnItemClickListener {
-        fun onItemClick(blog: BlogItem)
+        fun onItemClick(blog: PostItem)
     }
     private var onItemClickListener: OnItemClickListener? = null
 

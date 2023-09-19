@@ -17,15 +17,17 @@
 
     <ImageButton
         android:id="@+id/ibAddObservation"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/option_button"
+        android:backgroundTint="#6F050E40"
         android:clickable="true"
-        android:backgroundTint="@color/blue_dark"
-        android:background="@drawable/create_button"
-        android:src="@android:drawable/ic_menu_edit"
+        android:focusable="true"
+        android:foregroundGravity="center"
+        android:src="@drawable/baseline_edit_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:focusable="true"/>
+        app:maxImageSize="40dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
