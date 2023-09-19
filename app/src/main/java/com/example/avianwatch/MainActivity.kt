@@ -1,26 +1,18 @@
 package com.example.avianwatch
 
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.example.avianwatch.databinding.ActivityMainBinding
 import com.example.avianwatch.fragments.BirdFactsFragment
-import com.example.avianwatch.fragments.BlogsFragment
+import com.example.avianwatch.fragments.PostsFragment
 import com.example.avianwatch.fragments.GoBirdingFragment
 import com.example.avianwatch.fragments.HomeFragment
-import com.example.avianwatch.fragments.ObservationFragment
 import com.example.avianwatch.fragments.ObservationListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), OnCardClickListener{
     private lateinit var bottomNav: BottomNavigationView
@@ -66,12 +58,12 @@ class MainActivity : AppCompatActivity(), OnCardClickListener{
                 }
 
                 R.id.nav_blogs -> {
-                    updateTitle("Blogs")
-                    selectedFragment = BlogsFragment()
+                    updateTitle("Community")
+                    selectedFragment = PostsFragment()
                 }
 
                 R.id.nav_bird_facts -> {
-                    updateTitle("Bird Facts")
+                    updateTitle("Random Bird Facts")
                     selectedFragment = BirdFactsFragment()
                 }
 

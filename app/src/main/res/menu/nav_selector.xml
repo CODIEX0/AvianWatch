@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Selected icon color -->
+    <item
+        android:color="#056893"
+        android:state_checked="false"
+        android:title="not_selected"
+        />
+    <!-- Default icon color -->
+    <item
+        android:color="#A8E2FB"
+        android:state_checked="true"
+        android:title="selected"
+        />
+
+</selector>

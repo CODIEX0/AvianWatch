@@ -37,7 +37,7 @@ class RegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         //Sign in user
-        binding.btnSignIn.setOnClickListener {
+        binding.txtSignIn.setOnClickListener {
             val signInIntent = Intent(this,LoginActivity::class.java)
             startActivity(signInIntent)
         }

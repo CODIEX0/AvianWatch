@@ -14,10 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
 import com.example.avianwatch.adapters.BlogAdapter
-import com.example.avianwatch.data.BlogItem
+import com.example.avianwatch.data.PostItem
 import com.example.avianwatch.data.Image
-import com.example.avianwatch.databinding.ActivityMainBinding
-import com.example.avianwatch.databinding.FragmentBlogsBinding
+import com.example.avianwatch.databinding.FragmentPostsBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,14 +25,14 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [BlogsFragment.newInstance] factory method to
+ * Use the [PostsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class BlogsFragment : Fragment(), BlogAdapter.OnItemClickListener {
+class PostsFragment : Fragment(), BlogAdapter.OnItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var blogs: MutableList<BlogItem>
+    lateinit var blogs: MutableList<PostItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +42,8 @@ class BlogsFragment : Fragment(), BlogAdapter.OnItemClickListener {
         }
 
         blogs = mutableListOf(
-            BlogItem(
-                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.drawable.blog_bird)!!),
+            PostItem(
+                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.mipmap.post_bird)!!),
                 "Cody Ntuli",
                 "This birds like doing 10 – 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?",
                 1243
@@ -57,16 +56,16 @@ class BlogsFragment : Fragment(), BlogAdapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding = FragmentBlogsBinding.inflate(inflater, container, false)
+        val binding = FragmentPostsBinding.inflate(inflater, container, false)
 
         // go to the settings fragment
-        binding.ibAddBlog.setOnClickListener {
+        binding.ibAddPost.setOnClickListener {
             // Access the MainActivity and call the function to update the tool bar title
             val mainActivity = activity as MainActivity
-            mainActivity.updateTitle("Add Blog")
+            mainActivity.updateTitle("Add Post")
 
             val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            val addBlogsFragment = AddBlogFragment()
+            val addBlogsFragment = AddPostFragment()
             fragmentTransaction.replace(R.id.fragment_container, addBlogsFragment) // replace with the new fragment
             fragmentTransaction.addToBackStack(null) //add to back stack
             fragmentTransaction.commit()
@@ -87,7 +86,7 @@ class BlogsFragment : Fragment(), BlogAdapter.OnItemClickListener {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            BlogsFragment().apply {
+            PostsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -116,7 +115,7 @@ class BlogsFragment : Fragment(), BlogAdapter.OnItemClickListener {
         }
     }
 
-    override fun onItemClick(blog: BlogItem) {
+    override fun onItemClick(blog: PostItem) {
         // Handle the click event and navigate to a different fragment
         //Add data to bundle
         val bundle = Bundle()
@@ -126,7 +125,7 @@ class BlogsFragment : Fragment(), BlogAdapter.OnItemClickListener {
         bundle.putString("image", blog.imgBlogImage)
 
         try{
-            val fragment = BlogsFragment()
+            val fragment = PostsFragment()
             fragment.arguments = bundle
 
             //Navigate to fragment, passing bundle

@@ -19,7 +19,10 @@ import com.example.avianwatch.data.ObservationItem
 import com.example.avianwatch.databinding.ActivityMainBinding
 import com.example.avianwatch.databinding.FragmentObservationListBinding
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 
 class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListener {
@@ -29,6 +32,13 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Get the current date
+        val calendar = Calendar.getInstance()
+
+        // Format the date to display in your desired format (e.g., "dd/MM/yyyy")
+        val dateFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault())
+        val formattedDate = dateFormat.format(calendar.time)
+
         auth = FirebaseAuth.getInstance()
         val firebaseUser = auth.currentUser
         val uid = firebaseUser?.uid
@@ -37,11 +47,11 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
 
             ObservationItem(
                 uid,
-                "Crow",
-                Date(),
-                "west Rd Glen, Austin, Midrand",
-                "Saw a group of crows near the park.",
-                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.drawable.group_of_crows)!!)
+                "Flamingo",
+                formattedDate,
+                "Halfway House, Midrand",
+                "A pair of Flamingos, they looked liked they were mating.",
+                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.mipmap.flamingo_pair)!!)
 
                 )
         )

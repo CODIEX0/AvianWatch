@@ -31,41 +31,67 @@
         android:textSize="18sp"
         />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="bottom"
+        android:orientation="vertical"
         android:layout_weight="5"
         >
 
         <Button
-            android:id="@+id/share_button"
+            android:id="@+id/btnPosts"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_gravity="top"
             android:backgroundTint="@color/button_color"
-            android:drawableEnd="@drawable/baseline_share_24"
+            android:drawableEnd="@drawable/baseline_mark_unread_chat_alt_24"
             android:gravity="center"
-            android:text="Share"
+            android:text="Posts"
             android:textColor="@color/background_color"
-            app:cornerRadius="20dp" />
+            app:cornerRadius="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.072" />
 
-        <Button
-            android:id="@+id/btn_next_fact"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="140dp"
-            android:backgroundTint="@color/button_color"
-            android:textColor="@color/background_color"
-            android:gravity="center"
-            android:drawableEnd="@drawable/baseline_next_plan_24"
-            android:layout_marginTop="16dp"
-            android:text="Next Fact"
-            app:cornerRadius="20dp"/>
+            android:layout_weight="5"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
+            <Button
+                android:id="@+id/btnShare"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/button_color"
+                android:drawableEnd="@drawable/baseline_share_24"
+                android:gravity="center"
+                android:text="Share"
+                android:textColor="@color/background_color"
+                app:cornerRadius="20dp" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btn_next_fact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="140dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/button_color"
+                android:drawableEnd="@drawable/baseline_next_plan_24"
+                android:gravity="center"
+                android:text="Next Fact"
+                android:textColor="@color/background_color"
+                app:cornerRadius="20dp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

@@ -42,7 +42,7 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="20dp"
-                android:src="@drawable/share" />
+                android:src="@mipmap/share" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="20dp"
-                android:src="@drawable/reply" />
+                android:src="@mipmap/reply" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -88,14 +88,16 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="20dp"
-                android:src="@drawable/like" />
+                android:src="@mipmap/like" />
 
             <TextView
+                android:id="@+id/txtLikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/like"
+                android:text="1000"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="15sp"/>
+
         </LinearLayout>
 
         <TextView
@@ -130,19 +132,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imgBirdImage" />
 
-        <TextView
-            android:id="@+id/txtLikes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"
-            android:layout_marginBottom="4dp"
-            android:text="1000"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@+id/txtText"
-            app:layout_constraintStart_toEndOf="@+id/imgBirdImage"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-            app:layout_constraintVertical_bias="0.0" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

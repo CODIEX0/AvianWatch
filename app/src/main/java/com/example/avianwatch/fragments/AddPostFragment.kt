@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -15,10 +14,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [AddBlogFragment.newInstance] factory method to
+ * Use the [AddPostFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddBlogFragment : Fragment() {
+class AddPostFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -36,7 +35,7 @@ class AddBlogFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_blog, container, false)
+        return inflater.inflate(R.layout.fragment_add_post, container, false)
     }
 
     companion object {
@@ -51,7 +50,7 @@ class AddBlogFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            AddBlogFragment().apply {
+            AddPostFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

@@ -4,28 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.BlogsFragment"
+    tools:context=".fragments.PostsFragment"
     android:background="@color/background_color">
 
     <view class="androidx.recyclerview.widget.RecyclerView"
         android:id="@+id/rvBlogList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_blog">
+        tools:listitem="@layout/item_post">
 
     </view>
 
     <ImageButton
-        android:id="@+id/ibAddBlog"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:id="@+id/ibAddPost"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/option_button"
+        android:backgroundTint="#6F050E40"
         android:clickable="true"
-        android:backgroundTint="@color/blue_dark"
-        android:background="@drawable/create_button"
-        android:src="@android:drawable/ic_menu_edit"
+        android:focusable="true"
+        android:foregroundGravity="center"
+        android:src="@drawable/baseline_edit_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:focusable="true"/>
+        app:maxImageSize="40dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

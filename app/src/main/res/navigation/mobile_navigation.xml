@@ -18,6 +18,12 @@
         android:label="Sign In"
         tools:layout="@layout/activity_login"/>
 
+    <activity
+        android:id="@+id/activity_main"
+        android:name="com.example.avianwatch.MainActivity"
+        android:label="Main"
+        tools:layout="@layout/activity_main"/>
+
 
     <fragment
         android:id="@+id/navigation_home"
@@ -27,19 +33,28 @@
 
         <action
             android:id="@+id/action_navigation_home_to_navigation_bird_facts"
-            app:destination="@id/navigation_bird_facts" />
+            app:destination="@id/navigation_bird_facts"
+            app:enterAnim="@anim/slide_in"/>
         <action
             android:id="@+id/action_navigation_home_to_navigation_go_birding"
-            app:destination="@id/navigation_go_birding" />
+            app:destination="@id/navigation_go_birding"
+            app:enterAnim="@anim/slide_in"/>
         <action
             android:id="@+id/action_navigation_home_to_navigation_view_birds"
-            app:destination="@id/navigation_view_birds" />
+            app:destination="@id/navigation_view_birds"
+            app:enterAnim="@anim/slide_in"/>
         <action
             android:id="@+id/action_navigation_home_to_navigation_identify_bird"
-            app:destination="@id/navigation_identify_bird" />
+            app:destination="@id/navigation_identify_bird"
+            app:enterAnim="@anim/slide_in"/>
         <action
-            android:id="@+id/action_navigation_home_to_navigation_blogs"
-            app:destination="@id/navigation_blogs" />
+            android:id="@+id/action_navigation_home_to_navigation_posts"
+            app:destination="@id/navigation_posts"
+            app:enterAnim="@anim/slide_in"/>
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_settings"
+            app:destination="@id/navigation_settings"
+            app:enterAnim="@anim/slide_in"/>
     </fragment>
 
     <fragment
@@ -47,6 +62,13 @@
         android:name="com.example.avianwatch.fragments.GoBirdingFragment"
         android:label="Go Birding"
         tools:layout="@layout/fragment_go_birding" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.avianwatch.fragments.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+
 
     <fragment
         android:id="@+id/navigation_identify_bird"
@@ -60,8 +82,8 @@
         android:label="Bird Facts"
         tools:layout="@layout/fragment_bird_facts">
         <action
-            android:id="@+id/action_BirdFactsFragment_to_CommunityEngagementFragment"
-            app:destination="@id/navigation_blogs"
+            android:id="@+id/action_BirdFactsFragment_to_PostsFragment"
+            app:destination="@id/navigation_posts"
             app:enterAnim="@anim/slide_in" />
     </fragment>
 
@@ -72,9 +94,20 @@
         tools:layout="@layout/fragment_observation_list" />
 
     <fragment
-        android:id="@+id/navigation_blogs"
-        android:name="com.example.avianwatch.fragments.BlogsFragment"
+        android:id="@+id/navigation_posts"
+        android:name="com.example.avianwatch.fragments.PostsFragment"
         android:label="Blogs"
-        tools:layout="@layout/fragment_blogs" />
+        tools:layout="@layout/fragment_posts" >
+        <action
+            android:id="@+id/action_PostsFragment_to_AddPostFragment"
+            app:destination="@id/navigation_add_post"
+            app:enterAnim="@anim/slide_in" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_add_post"
+        android:name="com.example.avianwatch.fragments.AddPostFragment"
+        android:label="Add Post"
+        tools:layout="@layout/fragment_add_post" />
 
 </navigation>
