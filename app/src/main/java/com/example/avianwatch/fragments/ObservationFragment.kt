@@ -1,45 +1,42 @@
 package com.example.avianwatch.fragments
 
 import android.Manifest
-import android.Manifest.*
-import android.Manifest.permission.*
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.pm.PackageManager.*
 import android.graphics.Bitmap
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
-import android.hardware.camera2.CaptureRequest
-import android.net.Uri
+import android.location.Location
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.checkSelfPermission
-import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import com.example.avianwatch.data.BirdObservation
+import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 
 class ObservationFragment : Fragment() {
     private lateinit var capturedImage: ImageView
     private val cameraRequestCode = 101
     private val CAMERA_PERMISSION_CODE = 100
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationRequest: LocationRequest
 
-   override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
@@ -51,14 +48,54 @@ class ObservationFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_observation, container, false)
         capturedImage = view!!.findViewById(R.id.imgObservationImage)
-        val captureButton = view!!.findViewById<FloatingActionButton>(R.id.fabtnCamera)
+        val captureButton = view!!.findViewById<ImageButton>(R.id.btnCamera)
 
         captureButton.setOnClickListener {
             checkCameraPermission()
-
         }
 
         return view
+    }
+
+    fun addBirdObservationOnMap(userObservation: BirdObservation, mMap: GoogleMap) {
+        // Create location request
+        locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10000 // Update location every 10 seconds
+
+
+        // Create location callback
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                if (locationResult.lastLocation != null) {
+                    val location: Location = locationResult.lastLocation!!
+                    val latLng = LatLng(location.latitude, location.longitude)
+
+                    val birdSpecies = userObservation.birdSpecies // Replace with the actual bird species field in UserBirdObservation
+
+                    // Create a LatLng object for the observation location
+                    val observationLocation = LatLng(latLng.latitude, latLng.longitude)
+
+                    // Create a MarkerOptions object for the bird observation
+                    val markerOptions = MarkerOptions()
+                        .position(observationLocation)
+                        .title("Bird Observation")
+                        .snippet(birdSpecies)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+
+                    // Add the marker to the map
+                    val marker = mMap.addMarker(markerOptions)
+
+                    // Optionally, you can store the marker or observation data for future reference
+                    // For example, you could store it in a ViewModel, database, or a list for later use.
+                    // viewModel.addBirdObservationMarker(userObservation, marker)
+                }else{
+
+                }
+            }
+        }
+
     }
 
 
@@ -82,17 +119,13 @@ class ObservationFragment : Fragment() {
                 CAMERA_PERMISSION_CODE
             )
         } else {
-            launchCamera()
+            ImagePicker.with(this)
+                .crop()                     //crop image(optional), check customization for more options
+                .compress(1024)             //final image size will be less than 1 MB
+                .maxResultSize(1080,1080)   //final image resolution will be less than 1080 x 1080
+                .start()
         }
     }
 
-    private fun launchCamera() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
-            startActivityForResult(takePictureIntent, cameraRequestCode)
-        } else {
-            Toast.makeText(requireContext(), "Camera not available", Toast.LENGTH_SHORT).show()
-        }
 
-    }
 }

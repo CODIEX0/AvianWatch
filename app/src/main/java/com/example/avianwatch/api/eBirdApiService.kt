@@ -7,13 +7,13 @@ import retrofit2.http.Query
 
 interface eBirdApiService {
 
-    @GET("ws1.1/ref/hotspot/region")
+    @GET("ws1.1/ref/hotspot/region/")
     fun getHotspotsByQuery(
         @Query("query") query: String,
         @Query("api_key") apiKey: String
     ): Call<List<Hotspot>>
 
-    @GET("ws1.1/ref/hotspot/geo")
+    @GET("ws1.1/ref/hotspot/geo/")
     fun getNearbyHotspots(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,

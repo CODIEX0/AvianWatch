@@ -1,8 +1,9 @@
 package com.example.avianwatch.data
 
 data class Post(
+    val userID: String?,
     val userName: String,
-    val text: String,
-    val likes: String,
-    val image: String?
+    var text: String,
+    var likes: Int,
+    var imageString: String?
 )

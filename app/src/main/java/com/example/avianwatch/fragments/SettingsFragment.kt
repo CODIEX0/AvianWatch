@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
@@ -57,7 +58,7 @@ class SettingsFragment : Fragment() {
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    // handle error
+                    Toast.makeText(requireContext(), "Couldn't retrieve your user preferences", Toast.LENGTH_SHORT).show()
                 }
             })
         }
@@ -79,11 +80,10 @@ class SettingsFragment : Fragment() {
             preferencesRef.child(uid).setValue(userPreferences)
                 .addOnSuccessListener {
                     // preferences saved successfully
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                    requireActivity().finish()
+                    requireActivity().onBackPressed() // Navigate back to the previous screen
                 }
                 .addOnFailureListener {
-                    // handle error
+                    Toast.makeText(requireContext(), "Couldn't update user preferences", Toast.LENGTH_SHORT).show()
                 }
         }
     }

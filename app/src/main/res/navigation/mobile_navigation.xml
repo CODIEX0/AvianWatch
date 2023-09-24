@@ -45,7 +45,7 @@
             app:enterAnim="@anim/slide_in"/>
         <action
             android:id="@+id/action_navigation_home_to_navigation_identify_bird"
-            app:destination="@id/navigation_identify_bird"
+            app:destination="@id/navigation_add_observation_bird"
             app:enterAnim="@anim/slide_in"/>
         <action
             android:id="@+id/action_navigation_home_to_navigation_posts"
@@ -61,7 +61,16 @@
         android:id="@+id/navigation_go_birding"
         android:name="com.example.avianwatch.fragments.GoBirdingFragment"
         android:label="Go Birding"
-        tools:layout="@layout/fragment_go_birding" />
+        tools:layout="@layout/fragment_go_birding" >
+        <action
+            android:id="@+id/action_navigation_go_birding_to_navigation_settings"
+            app:destination="@id/navigation_settings"
+            app:enterAnim="@anim/slide_in"/>
+        <action
+            android:id="@+id/action_navigation_go_birding_to_navigation_add_observation_bird"
+            app:destination="@id/navigation_add_observation_bird"
+            app:enterAnim="@anim/slide_in"/>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
@@ -71,7 +80,7 @@
 
 
     <fragment
-        android:id="@+id/navigation_identify_bird"
+        android:id="@+id/navigation_add_observation_bird"
         android:name="com.example.avianwatch.fragments.ObservationFragment"
         android:label="Identify Bird"
         tools:layout="@layout/fragment_observation" />
@@ -91,7 +100,12 @@
         android:id="@+id/navigation_view_birds"
         android:name="com.example.avianwatch.fragments.ObservationListFragment"
         android:label="Aviary"
-        tools:layout="@layout/fragment_observation_list" />
+        tools:layout="@layout/fragment_observation_list" >
+        <action
+            android:id="@+id/action_ObservationListFragment_to_ObservationFragment"
+            app:destination="@id/navigation_add_observation_bird"
+            app:enterAnim="@anim/slide_in" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_posts"

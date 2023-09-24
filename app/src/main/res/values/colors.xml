@@ -13,6 +13,7 @@
 
     <!-- Blue shades -->
     <color name="blue_dark">#002A4D</color>
+    <color name="transparent_blue_dark">#74002A4D</color>
     <color name="blue_darker">#001628</color>
     <color name="blue_light">#66CCFF</color>
     <color name="blue_lighter">#99E6FF</color>
@@ -40,4 +41,5 @@
     <color name="gray_darker">#424242</color>
     <color name="gray_light">#BDBDBD</color>
     <color name="gray_lighter">#E0E0E0</color>
+
 </resources>

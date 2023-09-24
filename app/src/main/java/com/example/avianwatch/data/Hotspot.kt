@@ -1,7 +1,7 @@
 package com.example.avianwatch.data
 
 data class Hotspot(
-    val locId: String,
+    val observationID: String,
     val locName: String,
     val latitude: Double,
     val longitude: Double
