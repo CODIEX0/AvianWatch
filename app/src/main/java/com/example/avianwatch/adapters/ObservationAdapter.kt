@@ -7,9 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.R
-import com.example.avianwatch.data.Image
+import com.example.avianwatch.objects.Image
 import com.example.avianwatch.data.ObservationItem
-import com.example.avianwatch.data.UserBirdObservation
 
 class ObservationAdapter(private val observation: List<ObservationItem>) : RecyclerView.Adapter<ObservationAdapter.ObservationViewHolder>() {
 

@@ -6,3 +6,4 @@ data class HotspotWithMarker(
     val hotspot: Hotspot,
     val marker: Marker
 )
+

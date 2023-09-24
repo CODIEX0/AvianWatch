@@ -53,8 +53,8 @@
         android:id="@+id/fab"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="64dp"
         android:background="@drawable/option_button"
         android:backgroundTint="#6F050E40"
         android:clickable="true"
@@ -77,6 +77,21 @@
         android:background="#9FFFFFFF"
         android:onClick="toggleMapType"
         android:src="@drawable/baseline_layers_24"
+        android:text="Satellite View"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnCurrentLocation"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="13dp"
+        android:elevation="3dp"
+        android:background="#9FFFFFFF"
+        android:onClick="toggleMapType"
+        android:src="@drawable/baseline_my_location_24"
         android:text="Satellite View"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

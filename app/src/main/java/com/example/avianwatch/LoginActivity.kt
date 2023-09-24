@@ -4,14 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.example.avianwatch.data.Global
+import com.example.avianwatch.objects.Global
 import com.example.avianwatch.data.User
 import com.example.avianwatch.databinding.ActivityLoginBinding
-import com.example.avianwatch.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -58,11 +56,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnSignIn.setOnClickListener {
-            //val email = binding.edtEmail.text.toString()
-            //val password = binding.etPassWord.text.toString()
-            //validateLogin(email, password)
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            val email = binding.edtEmail.text.toString()
+            val password = binding.etPassWord.text.toString()
+            validateLogin(email, password)
+           // val intent = Intent(this, MainActivity::class.java)
+           // startActivity(intent)
         }
 
         val imgIcon: ImageView = findViewById(R.id.imgIcon)

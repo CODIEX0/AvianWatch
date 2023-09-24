@@ -1,6 +1,13 @@
-package com.example.avianwatch.data
+package com.example.avianwatch.objects
 
 import com.example.avianwatch.R
+import com.example.avianwatch.data.BirdFact
+import com.example.avianwatch.data.Hotspot
+import com.example.avianwatch.data.Post
+import com.example.avianwatch.data.RouteData
+import com.example.avianwatch.data.StepData
+import com.example.avianwatch.data.User
+import com.example.avianwatch.data.UserPreferences
 
 //Singleton class for storing live data
 object Global {
@@ -10,6 +17,8 @@ object Global {
     var routeData: RouteData? = null
     var stepDataList: MutableList<StepData> = mutableListOf()
     var users: MutableList<User> = mutableListOf()
+    var posts: MutableList<Post> = mutableListOf()
+
 
     //list of bird facts with corresponding image resource IDs
     val birdFactsList = listOf(

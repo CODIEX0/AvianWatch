@@ -1,10 +1,10 @@
 package com.example.avianwatch.fragments
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.os.Bundle
@@ -16,13 +16,15 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
 import com.example.avianwatch.api.eBirdApiService
-import com.example.avianwatch.data.Global
+import com.example.avianwatch.objects.Global
 import com.example.avianwatch.data.Hotspot
+import com.example.avianwatch.data.UserPreferences
 import com.example.avianwatch.databinding.BslOptionsBinding
 import com.example.avianwatch.databinding.FragmentGoBirdingBinding
 import com.example.avianwatch.model.GoBirdingViewModel
@@ -35,8 +37,17 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -49,16 +60,39 @@ import retrofit2.converter.gson.GsonConverterFactory
 class GoBirdingFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentGoBirdingBinding
     private lateinit var mMap: GoogleMap
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var preferencesRef: DatabaseReference
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private lateinit var birdingApiService: eBirdApiService
     private lateinit var viewModel: GoBirdingViewModel
     private var isSatelliteView = false // Flag to track the map type
+    private var radiusCircle: Circle? = null //variable to hold the circle on the map
+    private lateinit var userPreferences: UserPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        userPreferences = UserPreferences()
+        preferencesRef = FirebaseDatabase.getInstance().getReference("UserPreferences")
+
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            preferencesRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    // Try to get the online UserPreferences data from dataSnapshot; if null, use the default UserPreferences object
+                    userPreferences =
+                        dataSnapshot.getValue(UserPreferences::class.java) ?: UserPreferences()
+
+                }override fun onCancelled(databaseError: DatabaseError) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Error loading user preferences", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+
+        }
     }
 
     override fun onCreateView(
@@ -68,24 +102,25 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         binding = FragmentGoBirdingBinding.inflate(inflater, container, false)
 
-        // Find the button by ID and set its click listener
-        val satelliteToggleBtn = binding.btnSatelliteToggle
-        satelliteToggleBtn.setOnClickListener {
-            toggleMapType()
-        }
-
-        binding.fab.setOnClickListener(View.OnClickListener { showBottomDialog() })
-
-        // Initialize your Retrofit service
-        birdingApiService = RetrofitClientInstance.getRetrofitInstance().create(eBirdApiService::class.java)
-
-        // Initialize your ViewModel
-        viewModel = ViewModelProvider(this).get(GoBirdingViewModel::class.java)
-
         // Initialize map fragment
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        // Initialize the FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        // Find the button by ID and set its click listener
+        binding.btnSatelliteToggle.setOnClickListener { toggleMapType() }
+
+        binding.btnCurrentLocation.setOnClickListener { requestLocationPermissionAndZoom() }
+
+        binding.fab.setOnClickListener{ showBottomDialog() }
+
+        // initialize Retrofit service
+        birdingApiService = RetrofitClientInstance.getRetrofitInstance().create(eBirdApiService::class.java)
+
+        // initialize ViewModel
+        viewModel = ViewModelProvider(this).get(GoBirdingViewModel::class.java)
 
         return binding.root
     }
@@ -138,7 +173,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
     }
 
     object RetrofitClientInstance {
-        private const val BASE_URL = "https://ebird.org/ws2.0/" // eBird API base URL
+        private const val BASE_URL = "https://ebird.org/" // eBird API base URL
 
         private val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -165,30 +200,40 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
 
         // Check location permissions
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Enable the "My Location" button
-            mMap.isMyLocationEnabled = true
-            mMap.uiSettings.isMyLocationButtonEnabled = true
-
-            // Initialize location services
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
             // Create location request
             locationRequest = LocationRequest()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             locationRequest.interval = 10000 // Update location every 10 seconds
 
+            // Call zoomToCurrentLocation
+            zoomToCurrentLocation()
+
+
             // Create location callback
             locationCallback = object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
-                    //if (locationResult.lastLocation != null) {
+                    if (locationResult.lastLocation != null) {
                         val location: Location = locationResult.lastLocation!!
                         val latLng = LatLng(location.latitude, location.longitude)
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f)) // Adjust zoom level
 
-                        // Load nearby hotspots using Retrofit on the main thread
+                        // Add a marker to the map at the user's location
+                        mMap.addMarker(
+                            MarkerOptions()
+                                .position(latLng) // Set the marker's position
+                                .title("Current Location") // Set a title for the marker (optional)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)) // Customize the marker icon (optional)
+                        )
+
+                        // Draw the radius boundary
+                        drawRadiusBoundary(location.latitude, location.longitude, userPreferences)
+
+                        // Load nearby hotspots using Retrofit
                         loadNearbyHotspots(location.latitude, location.longitude)
+                    }else{
 
+                    }
                 }
             }
 
@@ -197,6 +242,64 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         } else {
             // Request location permissions
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    // Function to calculate zoom level to fit the entire maxRadius on the screen
+    private fun calculateZoomLevel(centerLatLng: LatLng, maxRadius: Double): Float {
+        val screenSize = Point()
+        val zoomScreenPadding = 100 // Padding to ensure the entire radius is visible
+        activity?.windowManager?.defaultDisplay?.getSize(screenSize)
+
+        val zoomLevel = (Math.log(156543.03392 * maxRadius * 2.0 / screenSize.x) / Math.log(2.0)).toFloat()
+
+        // Ensure that the zoom level is within a reasonable range (e.g., 2 to 20)
+        return zoomLevel.coerceIn(2f, 20f)
+    }
+
+    private fun drawRadiusBoundary(latitude: Double, longitude: Double, userPreferences: UserPreferences) {
+        // Remove the previous circle if it exists
+        radiusCircle?.remove()
+
+        // Get the user's preferences (e.g., maxRadius) from the UserPreferences class
+        val localUserPreferences = UserPreferences()
+
+        if (userPreferences != null) {
+
+            // Convert maxRadius to meters if unitSystem is "Metric," otherwise use yards
+            val maxRadiusInMeters = if (userPreferences.unitSystem == "Metric") {
+                userPreferences.maxRadius.toDouble() * 1000 // Convert kilometers to meters
+            } else {
+                userPreferences.maxRadius.toDouble() * 1760.0 // Convert Miles to yards
+            }
+            // Create a circle option with the user's selected radius
+            val circleOptions = CircleOptions()
+                .center(LatLng(latitude, longitude))
+                .radius(maxRadiusInMeters)
+                .strokeColor(ContextCompat.getColor(requireContext(), R.color.blue_dark))
+                .strokeWidth(2f)
+                .fillColor(ContextCompat.getColor(requireContext(), R.color.transparent_blue_dark))
+
+            // Add the circle to the map
+            radiusCircle = mMap.addCircle(circleOptions)
+        }else{
+            // Convert maxRadius to meters if unitSystem is "Metric," otherwise use yards
+            val maxRadiusInMeters = if (localUserPreferences.unitSystem == "Metric") {
+                localUserPreferences.maxRadius.toDouble() * 1000 // Convert kilometers to meters
+            } else {
+                localUserPreferences.maxRadius.toDouble() * 1760.0 // Convert Miles to yards
+            }
+
+            // Create a circle option with the user's selected radius
+            val circleOptions = CircleOptions()
+                .center(LatLng(latitude, longitude))
+                .radius(maxRadiusInMeters)
+                .strokeColor(ContextCompat.getColor(requireContext(), R.color.blue_dark))
+                .strokeWidth(2f)
+                .fillColor(ContextCompat.getColor(requireContext(), R.color.transparent_blue_dark))
+
+            // Add the circle to the map
+            radiusCircle = mMap.addCircle(circleOptions)
         }
     }
 
@@ -257,28 +360,38 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         ) {
             return
         }
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
     override fun onStop() {
         super.onStop()
         // Stop location updates
-        if (::fusedLocationProviderClient.isInitialized && ::locationCallback.isInitialized) {
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        if (::fusedLocationClient.isInitialized && ::locationCallback.isInitialized) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
         }
     }
 
-
-    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Location permissions granted, start location updates
-                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return
+                }
+                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
             } else {
                 // Location permissions denied, handle it accordingly (e.g., show a message to the user)
                 Toast.makeText(
@@ -290,10 +403,55 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun requestLocationPermissionAndZoom() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission already granted, so request the user's location
+            zoomToCurrentLocation()
+        } else {
+            // Request location permission
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+
     // Function to toggle between standard and satellite map views
     private fun toggleMapType() {
         isSatelliteView = !isSatelliteView
         mMap.mapType = if (isSatelliteView) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL
     }
 
+    private fun zoomToCurrentLocation() {
+        // Check if the user's location is available
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission granted, so get the user's last known location
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        // Obtain the user's location as a LatLng object
+                        val userLocation = LatLng(it.latitude, it.longitude)
+
+                        // Calculate the zoom level to fit the entire maxRadius on the screen
+                        val zoomLevel = calculateZoomLevel(userLocation, userPreferences.maxRadius.toDouble())
+
+                        // Draw the radius boundary
+                        drawRadiusBoundary(it.latitude, it.longitude, userPreferences)
+
+                        // Move the camera to the user's location with the calculated zoom level
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoomLevel))
+                    }
+                }
+        }
+    }
 }

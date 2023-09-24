@@ -27,15 +27,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/circular"
-            app:strokeColor="@color/text_color"
+            app:strokeColor="#AE021A57"
             app:strokeWidth="5dp"
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/fabtnCamera"
+            android:id="@+id/btnCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
             android:background="@drawable/camera_button"
             android:backgroundTint="#CD050E40"
             android:clickable="true"
@@ -58,7 +57,7 @@
         android:layout_height="30dp"
         android:textSize="21sp"
         android:textFontWeight="500"
-        android:text="@string/take_a_picture"
+        android:text="@string/take_a_photo"
         android:fontFamily="sans-serif-condensed-light"
         android:gravity="center"/>
 
@@ -72,14 +71,14 @@
         >
 
         <EditText
-            android:id="@+id/etBirdName"
+            android:id="@+id/etText"
             android:layout_width="245dp"
             android:layout_height="48dp"
             android:layout_marginStart="20dp"
             android:gravity="center"
             android:textStyle="bold"
             android:background="#00FFFFFF"
-            android:hint="@string/blog"
+            android:hint="@string/caption"
             android:textColor="@color/text_color"
             android:textColorHint="#5E000000" />
 

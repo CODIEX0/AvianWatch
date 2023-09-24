@@ -14,14 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
 import com.example.avianwatch.adapters.ObservationAdapter
-import com.example.avianwatch.data.Image
+import com.example.avianwatch.objects.Image
 import com.example.avianwatch.data.ObservationItem
-import com.example.avianwatch.databinding.ActivityMainBinding
 import com.example.avianwatch.databinding.FragmentObservationListBinding
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 

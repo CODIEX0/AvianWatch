@@ -8,7 +8,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.example.avianwatch.data.Global
+import com.example.avianwatch.objects.Global
 import com.example.avianwatch.data.User
 import com.example.avianwatch.databinding.ActivityRegisterBinding
 import com.google.android.gms.tasks.Task
