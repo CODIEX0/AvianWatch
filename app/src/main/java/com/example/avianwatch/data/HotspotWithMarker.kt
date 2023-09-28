@@ -4,6 +4,6 @@ import com.google.android.gms.maps.model.Marker
 
 data class HotspotWithMarker(
     val hotspot: Hotspot,
-    val marker: Marker
+    val marker: Marker?
 )
 

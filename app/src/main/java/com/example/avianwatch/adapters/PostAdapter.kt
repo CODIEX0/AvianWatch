@@ -15,7 +15,7 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        var likesCount = 1000 // Initialize with the current likes count
+        var likesCount = 0 // Initialize with the current likes count
         var userHasLiked = false // Initialize the flag
         val user_name: TextView = itemView.findViewById(R.id.txtUserName)
         val text: TextView = itemView.findViewById(R.id.txtText)

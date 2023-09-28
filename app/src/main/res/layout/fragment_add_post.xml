@@ -16,7 +16,7 @@
         android:layout_gravity="center">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgObservationImage"
+            android:id="@+id/imgPostImage"
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_gravity="center"

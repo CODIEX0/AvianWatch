@@ -47,39 +47,35 @@ class AddPostFragment : Fragment() {
     }
 
     fun addPost() {
-        val imageData = convertImageToBase64(binding.imgObservationImage).toString()
-        var post: Post
-        // Retrieve all users
-        FirebaseManager.getUserName(Global.currentUser!!.uid.toString()) {username ->
+        val imageData = convertImageToBase64(binding.imgPostImage).toString()
 
-            // Update the global users list
-            post = Post(
-                Global.currentUser?.uid.toString(), //Store UID to create relationship
-                username,
-                binding.etText.text.toString(),
-                0,
-                imageData
-            )
-            //Add post to DB and update local storage
-            FirebaseManager.addPost(post) { isSuccess -> //Use callback to wait for results
-                if (isSuccess)
-                {
-                    //Update local categories list
-                    FirebaseManager.getPosts(Global.currentUser!!.uid.toString()) { posts ->
-                        Global.posts = posts
-                    }
-                    //Toast.makeText(requireActivity(), "Post Created Successfully!", Toast.LENGTH_SHORT).show()
-
-                } else {
-                    //Toast.makeText(requireActivity(), "Post Creation Failed...", Toast.LENGTH_LONG).show()
+        // Update the global users list
+        val post = Post(
+            Global.currentUser?.uid.toString(), //Store UID to create relationship
+            Global.currentUser?.username.toString(),
+            binding.etText.text.toString(),
+            0,
+            imageData
+        )
+        Global.posts.add(post)
+        //Add post to DB and update local storage
+        FirebaseManager.addPost(post) { isSuccess -> //Use callback to wait for results
+            if (isSuccess)
+            {
+                //Update local posts list
+                FirebaseManager.getPosts(Global.currentUser!!.uid.toString()) { posts ->
+                    Global.posts = posts
                 }
+                //Toast.makeText(requireContext(), "Post Created Successfully!", Toast.LENGTH_SHORT).show()
 
+            } else {
+                //Toast.makeText(requireContext(), "Post Creation Failed...", Toast.LENGTH_LONG).show()
             }
 
         }
 
         if (binding.etText.text.toString() == "") {
-            //Toast.makeText(requireActivity(), "Enter the Caption...", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "Enter the Caption...", Toast.LENGTH_SHORT).show()
             return
         }
         requireActivity().onBackPressed() // Navigate back to the previous screen
@@ -89,12 +85,11 @@ class AddPostFragment : Fragment() {
 
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == AppCompatActivity.RESULT_OK){
             val imageBitmap = data?.extras?.get("data") as Bitmap
-            binding.imgObservationImage.setImageBitmap(imageBitmap)
+            binding.imgPostImage.setImageBitmap(imageBitmap)
         }else{
             super.onActivityResult(requestCode, resultCode, data)
         }
-
-        binding.imgObservationImage.setImageURI(data?.data)
+        binding.imgPostImage.setImageURI(data?.data)
     }
 
 }
