@@ -59,8 +59,8 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.edtEmail.text.toString()
             val password = binding.etPassWord.text.toString()
             validateLogin(email, password)
-           // val intent = Intent(this, MainActivity::class.java)
-           // startActivity(intent)
+            //val intent = Intent(this, MainActivity::class.java)
+            //startActivity(intent)
         }
 
         val imgIcon: ImageView = findViewById(R.id.imgIcon)

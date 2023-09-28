@@ -5,9 +5,10 @@ import com.google.firebase.database.IgnoreExtraProperties
 @IgnoreExtraProperties
 data class BirdObservation(
     val userID: String? = null,
+    val oid: String? = null,
     val birdSpecies: String,
-    val birdImageData: String?,
+    val additionalNotes: String,
+    val birdImage: String?,
     val dateTime: String?,
-    val hotspot: Hotspot,
-    val additionalNotes: String
+    val hotspot: Hotspot
 )

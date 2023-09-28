@@ -24,6 +24,7 @@ import com.example.avianwatch.R
 import com.example.avianwatch.api.eBirdApiService
 import com.example.avianwatch.objects.Global
 import com.example.avianwatch.data.Hotspot
+import com.example.avianwatch.data.HotspotWithMarker
 import com.example.avianwatch.data.UserPreferences
 import com.example.avianwatch.databinding.BslOptionsBinding
 import com.example.avianwatch.databinding.FragmentGoBirdingBinding
@@ -91,7 +92,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                     }
                 }
             })
-
         }
     }
 
@@ -153,7 +153,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
             val mainActivity = activity as MainActivity
             mainActivity.updateTitle("Add Observation")
 
-            replaceFragment(AddPostFragment())
+            replaceFragment(ObservationFragment())
         }
 
         binding.btnCancel.setOnClickListener {
@@ -194,7 +194,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -208,7 +207,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
 
             // Call zoomToCurrentLocation
             zoomToCurrentLocation()
-
+            var latLng: LatLng
 
             // Create location callback
             locationCallback = object : LocationCallback() {
@@ -216,26 +215,28 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                     super.onLocationResult(locationResult)
                     if (locationResult.lastLocation != null) {
                         val location: Location = locationResult.lastLocation!!
-                        val latLng = LatLng(location.latitude, location.longitude)
+                        latLng = LatLng(location.latitude, location.longitude)
 
                         // Add a marker to the map at the user's location
                         mMap.addMarker(
                             MarkerOptions()
                                 .position(latLng) // Set the marker's position
                                 .title("Current Location") // Set a title for the marker (optional)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)) // Customize the marker icon (optional)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)) // Customize the marker icon (optional)
                         )
 
                         // Draw the radius boundary
                         drawRadiusBoundary(location.latitude, location.longitude, userPreferences)
 
                         // Load nearby hotspots using Retrofit
-                        loadNearbyHotspots(location.latitude, location.longitude)
+                        loadEBirdHotspots(location.latitude, location.longitude)
                     }else{
 
                     }
                 }
             }
+            // Load nearby hotspots using the global object and firebase real-time database
+            loadUsersHotspots()
 
             // Start location updates
             startLocationUpdates()
@@ -303,7 +304,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun loadNearbyHotspots(latitude: Double, longitude: Double) {
+    private fun loadEBirdHotspots(latitude: Double, longitude: Double) {
         // Call eBird API using Retrofit
         val call = birdingApiService.getNearbyHotspots(latitude, longitude, Global.eBirdApiKey)
         call.enqueue(object : Callback<List<Hotspot>> {
@@ -317,10 +318,10 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                         // Add markers for hotspots on the main thread
                         requireActivity().runOnUiThread {
                             for (hotspot in hotspots) {
-                                val hotspotLocation = LatLng(hotspot.latitude, hotspot.longitude)
+                                val hotspotLocation = LatLng(hotspot.latLng.latitude, hotspot.latLng.longitude)
                                 val markerOptions = MarkerOptions()
                                     .position(hotspotLocation)
-                                    .title(hotspot.locName)
+                                    .title(hotspot.locationName)
                                 val marker = mMap.addMarker(markerOptions)
                                 // Store hotspot data in ViewModel or handle marker click as needed
                                 if (marker != null) {
@@ -347,6 +348,34 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         })
+    }
+
+    private fun loadUsersHotspots() {
+        // Call eBird API using Retrofit
+        if (!Global.hotspots.isNullOrEmpty()) {
+            // Clear existing markers
+            mMap.clear()
+
+            // Add markers for hotspots on the main thread
+            requireActivity().runOnUiThread {
+                for ((index, hotspot) in Global.hotspots.withIndex()) {
+                    val hotspotLocation = LatLng(hotspot.latLng.latitude, hotspot.latLng.longitude)
+                    val markerOptions = MarkerOptions()
+                        .position(hotspotLocation)
+                        .title(hotspot.locationName)
+                    val marker = mMap.addMarker(markerOptions)
+                    // Store hotspot data in ViewModel or handle marker click as needed
+                    if (marker != null) {
+                        val hwm = HotspotWithMarker(hotspot, marker)
+                        Global.hotspotsWithMarker.add(index,hwm)
+                    }
+                }
+            }
+        } else {
+            requireActivity().runOnUiThread {
+                Toast.makeText(requireContext(), "No nearby hotspots found.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun startLocationUpdates() {

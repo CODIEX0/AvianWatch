@@ -2,12 +2,15 @@ package com.example.avianwatch.objects
 
 import com.example.avianwatch.R
 import com.example.avianwatch.data.BirdFact
+import com.example.avianwatch.data.BirdObservation
 import com.example.avianwatch.data.Hotspot
+import com.example.avianwatch.data.HotspotWithMarker
 import com.example.avianwatch.data.Post
 import com.example.avianwatch.data.RouteData
 import com.example.avianwatch.data.StepData
 import com.example.avianwatch.data.User
 import com.example.avianwatch.data.UserPreferences
+import com.google.firebase.auth.FirebaseAuth
 
 //Singleton class for storing live data
 object Global {
@@ -18,6 +21,9 @@ object Global {
     var stepDataList: MutableList<StepData> = mutableListOf()
     var users: MutableList<User> = mutableListOf()
     var posts: MutableList<Post> = mutableListOf()
+    var observations: MutableList<BirdObservation> = mutableListOf()
+    var hotspots: MutableList<Hotspot> = mutableListOf()
+    var hotspotsWithMarker: MutableList<HotspotWithMarker> = mutableListOf()
 
 
     //list of bird facts with corresponding image resource IDs

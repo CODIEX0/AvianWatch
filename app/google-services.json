@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "22844793463",
+    "project_id": "avianwatch-23e70",
+    "storage_bucket": "avianwatch-23e70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22844793463:android:978d615363a02f8c57dc72",
+        "android_client_info": {
+          "package_name": "com.example.avianwatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCa9hXvKmH15t-wOsIjD4LS8eUPGsxnzj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

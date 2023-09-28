@@ -21,20 +21,11 @@ import com.example.avianwatch.objects.FirebaseManager
 import com.example.avianwatch.objects.Global
 
 class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
-    lateinit var posts: MutableList<Post>
+    lateinit var post: Post
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        posts = mutableListOf(
-            Post(
-                "Mti2YdQD2JUYQJcnFUZRpNbiyQI2",
-                "Cody Ntuli",
-                "This birds like doing 10 – 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?",
-                1243,
-                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.mipmap.post_bird)!!)
-            )
-        )
     }
 
     override fun onCreateView(
@@ -68,11 +59,18 @@ class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
         // Set up the LinearLayoutManager for the RecyclerView
         val postLayoutManager = LinearLayoutManager(requireContext())
         lstPosts.layoutManager = postLayoutManager
-
         // Retrieve updated posts
-        FirebaseManager.getPosts(Global.currentUser!!.uid.toString()) { posts ->
+        FirebaseManager.getAllPosts { posts ->
             // Update the global posts list
             Global.posts = posts
+            post = Post(
+                "Mti2YdQD2JUYQJcnFUZRpNbiyQI2",
+                "Cody Ntuli",
+                "These birds like doing 10 – 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?",
+                1243,
+                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.mipmap.post_bird)!!)
+            )
+            Global.posts.add(post)
 
             try{
                 // Create an instance of PlantAdapter and pass the OnItemClickListener
