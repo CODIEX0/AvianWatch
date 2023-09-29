@@ -5,12 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
 import com.example.avianwatch.data.UserPreferences
 import com.example.avianwatch.databinding.FragmentSettingsBinding
+import com.example.avianwatch.model.SettingsViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,6 +26,7 @@ import com.google.firebase.database.ValueEventListener
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var preferencesRef: DatabaseReference
+    private lateinit var viewModel: SettingsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +44,31 @@ class SettingsFragment : Fragment() {
         binding.btnSave.setOnClickListener {
             saveUserPreferences()
         }
+
+        // Initialize ViewModel
+        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+
+        // Observe maxRadiusProgress and update maxRadiusText
+        viewModel.maxRadiusProgress.observe(viewLifecycleOwner) { progress ->
+            viewModel.updateMaxRadiusText(progress)
+        }
+
+        // Set up maxRadiusSeekBar (assuming you have a reference to it)
+        binding.maxRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // Update the ViewModel with the progress
+                viewModel.setMaxRadiusProgress(progress)
+                binding.txtMaxRadius.text = progress.toString()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // Not needed
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // Not needed
+            }
+        })
         return view
     }
 

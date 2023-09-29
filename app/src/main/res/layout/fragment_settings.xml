@@ -123,6 +123,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -132,7 +133,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtUserName"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.184">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -144,21 +146,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="150dp"
                 android:text="0 km"
+                android:textColor="@color/text_color"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_color" />
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="100 km"
+                android:textColor="@color/text_color"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_color" />
+                android:textStyle="bold" />
 
         </LinearLayout>
-
 
         <SeekBar
             android:id="@+id/maxRadiusSeekBar"
@@ -177,17 +178,31 @@
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="58dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="@color/button_color"
+        android:drawableEnd="@drawable/baseline_save_24"
         android:text="Save"
+        android:textColor="@color/background_color"
         android:textSize="25dp"
         android:textStyle="bold"
-        android:textColor="@color/background_color"
-        android:drawableEnd="@drawable/baseline_settings_24"
         app:layout_constraintBottom_toTopOf="@+id/bottom_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.545"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtMaxRadius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:textColor="@color/text_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtUserName"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
