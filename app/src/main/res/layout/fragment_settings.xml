@@ -16,7 +16,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:background="@drawable/sf_view"
-        android:backgroundTint="@color/button_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -144,8 +143,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="150dp"
-                android:text="0 km"
+                android:layout_marginEnd="178dp"
+                android:text="0"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -154,7 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:text="100 km"
+                android:text="100"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:textStyle="bold" />
