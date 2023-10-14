@@ -62,6 +62,12 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         binding = FragmentObservationBinding.inflate(inflater, container, false)
 
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            REQUEST_LOCATION_PERMISSION
+        )
+
         binding.btnCamera.setOnClickListener {
             ImagePicker.with(this)
                 .crop()                     //crop image(optional), check customization for more options
@@ -82,8 +88,6 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 10000 // Update location every 10 seconds
-
-
 
         // Create location callback
         locationCallback = object : LocationCallback() {
@@ -137,9 +141,11 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                     location?.let {
                         val latLng = LatLng(location.latitude, location.longitude)
                         val hotspot = Hotspot(
-                            Global.currentUser?.uid.toString(),
+                            UUID.randomUUID().toString(),
                             getCityAndSuburbNameFromLatLng(latLng),
-                            latLng
+                            binding.etBirdName.text.toString(),
+                            location.latitude,
+                            location.longitude
                         )
                         val observation = BirdObservation(
                             Global.currentUser?.uid.toString(), //Store UID to create relationship
@@ -202,20 +208,23 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun getCityAndSuburbNameFromLatLng(latLng: LatLng): String {
-        val geocoder = Geocoder(requireContext(), Locale.getDefault())
-        try {
-            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0]
-                val city = address.locality ?: "Unknown City"
-                val suburb = address.subLocality ?: "Unknown Suburb"
-                return "$city, $suburb"
+        if (isAdded) {
+            val geocoder = Geocoder(requireContext(), Locale.getDefault())
+            try {
+                val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0]
+                    val city = address.locality ?: "Unknown City"
+                    val suburb = address.subLocality ?: "Unknown Suburb"
+                    return "$city, $suburb"
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
         return "Unknown"
     }
+
 
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)

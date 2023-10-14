@@ -173,7 +173,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
     }
 
     object RetrofitClientInstance {
-        private const val BASE_URL = "https://ebird.org/" // eBird API base URL
+        private const val BASE_URL = "https://api.ebird.org/v2/" // eBird API base URL
 
         private val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -221,8 +221,8 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                         mMap.addMarker(
                             MarkerOptions()
                                 .position(latLng) // Set the marker's position
-                                .title("Current Location") // Set a title for the marker (optional)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)) // Customize the marker icon (optional)
+                                .title("Current Location") // Set a title for the marker
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)) // Customize the marker icon
                         )
 
                         // Draw the radius boundary
@@ -318,10 +318,12 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                         // Add markers for hotspots on the main thread
                         requireActivity().runOnUiThread {
                             for (hotspot in hotspots) {
-                                val hotspotLocation = LatLng(hotspot.latLng.latitude, hotspot.latLng.longitude)
+                                val hotspotLocation = LatLng(hotspot.lat, hotspot.lng)
                                 val markerOptions = MarkerOptions()
                                     .position(hotspotLocation)
-                                    .title(hotspot.locationName)
+                                    .title(hotspot.comName)
+                                    .snippet(hotspot.locName)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                                 val marker = mMap.addMarker(markerOptions)
                                 // Store hotspot data in ViewModel or handle marker click as needed
                                 if (marker != null) {
@@ -331,7 +333,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                         }
                     } else {
                         requireActivity().runOnUiThread {
-                            Toast.makeText(requireContext(), "No nearby hotspots found.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Couldn't get online hotspots.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {
@@ -359,10 +361,12 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
             // Add markers for hotspots on the main thread
             requireActivity().runOnUiThread {
                 for ((index, hotspot) in Global.hotspots.withIndex()) {
-                    val hotspotLocation = LatLng(hotspot.latLng.latitude, hotspot.latLng.longitude)
+                    val hotspotLocation = LatLng(hotspot.lat, hotspot.lng)
                     val markerOptions = MarkerOptions()
                         .position(hotspotLocation)
-                        .title(hotspot.locationName)
+                        .title(hotspot.comName)
+                        .snippet(hotspot.locName)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
                     val marker = mMap.addMarker(markerOptions)
                     // Store hotspot data in ViewModel or handle marker click as needed
                     if (marker != null) {
@@ -373,7 +377,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
             }
         } else {
             requireActivity().runOnUiThread {
-                Toast.makeText(requireContext(), "No nearby hotspots found.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Couldn't get user's hotspots.", Toast.LENGTH_SHORT).show()
             }
         }
     }
