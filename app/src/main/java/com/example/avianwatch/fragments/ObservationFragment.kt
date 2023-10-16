@@ -138,14 +138,16 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
             val formattedDate = dateFormat.format(calendar.time)
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
+                    var latLng: LatLng = LatLng(0.0,0.0)
                     location?.let {
-                        val latLng = LatLng(location.latitude, location.longitude)
+                        latLng = LatLng(location.latitude, location.longitude)
+                    }
                         val hotspot = Hotspot(
                             UUID.randomUUID().toString(),
                             getCityAndSuburbNameFromLatLng(latLng),
                             binding.etBirdName.text.toString(),
-                            location.latitude,
-                            location.longitude
+                            0.0,//location.latitude,
+                            0.0//location.longitude
                         )
                         val observation = BirdObservation(
                             Global.currentUser?.uid.toString(), //Store UID to create relationship
@@ -175,7 +177,7 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                             }
                         }
                     }
-                }
+                //}
 
         } else {
             // Request location permission

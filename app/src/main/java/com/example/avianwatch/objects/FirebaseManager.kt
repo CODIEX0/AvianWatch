@@ -223,7 +223,7 @@ object FirebaseManager {
 
         // Add the observation to the Firebase database using the id
         if (id != null) {
-            observationRef.child(id).setValue(observation)
+            observationRef.child(observation.oid).setValue(observation)
                 .addOnSuccessListener {
                     // post added successfully
                     callback(true) // Invoke the success callback
