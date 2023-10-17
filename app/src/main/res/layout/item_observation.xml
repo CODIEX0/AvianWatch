@@ -128,7 +128,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvBirdName" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/txtNotes"
             android:layout_width="188dp"
             android:layout_height="47dp"
             android:layout_marginStart="16dp"

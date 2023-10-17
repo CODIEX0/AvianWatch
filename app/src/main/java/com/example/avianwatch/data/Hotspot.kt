@@ -6,4 +6,6 @@ data class Hotspot(
     val comName: String,
     val lat: Double,
     val lng: Double,
-)
+){
+    constructor() : this("", "", "", 0.0, 0.0)
+}
