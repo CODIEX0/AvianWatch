@@ -49,6 +49,7 @@ dependencies {
     implementation libs.play.services.location
     implementation libs.volley
     implementation 'androidx.databinding:library:3.2.0-alpha11'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.8.1'
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.ext.junit
     androidTestImplementation libs.espresso.core

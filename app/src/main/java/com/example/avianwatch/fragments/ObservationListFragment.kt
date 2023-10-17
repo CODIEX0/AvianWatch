@@ -8,51 +8,77 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
 import com.example.avianwatch.adapters.ObservationAdapter
-import com.example.avianwatch.objects.Image
-import com.example.avianwatch.data.ObservationItem
+import com.example.avianwatch.data.BirdObservation
 import com.example.avianwatch.databinding.FragmentObservationListBinding
 import com.google.firebase.auth.FirebaseAuth
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import com.google.firebase.database.*
 
 
 class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListener {
     private lateinit var auth: FirebaseAuth
-    lateinit var userBirdObservations: MutableList<ObservationItem>
+    private lateinit var userId: String
+    private lateinit var userBirdObservations: MutableList<BirdObservation>
+    private lateinit var adapter: ObservationAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Get the current date
-        val calendar = Calendar.getInstance()
-
-        // Format the date to display in your desired format (e.g., "dd/MM/yyyy")
-        val dateFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault())
-        val formattedDate = dateFormat.format(calendar.time)
-
         auth = FirebaseAuth.getInstance()
+        userBirdObservations = mutableListOf()
+        adapter = ObservationAdapter(userBirdObservations)
+
+        // Get the current user's UID and store it in userId
+        val firebaseUser = auth.currentUser
+        userId = firebaseUser?.uid ?: ""
+
+        Log.d("ObservationListFragment", "User ID: $userId")
+        // Load user's observations from Firebase
+        loadUserObservations()
+    }
+    private fun loadUserObservations() {
+        // Get the current user's UID
         val firebaseUser = auth.currentUser
         val uid = firebaseUser?.uid
 
-        userBirdObservations = mutableListOf(
+        if (uid != null) {
+            // Initialize the Realtime Database reference
+            val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().reference.child("BirdObservation")
 
-            ObservationItem(
-                uid,
-                "Flamingo",
-                formattedDate,
-                "Halfway House, Midrand",
-                "A pair of Flamingos, they looked liked they were mating.",
-                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.mipmap.flamingo_pair)!!)
+            databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val userObservations: MutableList<BirdObservation> = mutableListOf()
 
-                )
-        )
+                    for (snapshot in dataSnapshot.children) {
+                        val birdObservation = snapshot.getValue(BirdObservation::class.java)
+
+                        // Check if the "userID" matches the current user's UID
+                        if (birdObservation != null && birdObservation.userID == uid) {
+                            Log.d("ObservationListFragment", "Additional Notes: ${birdObservation.additionalNotes}")
+                            userObservations.add(birdObservation)
+                        }
+                    }
+
+                    // Log the size of userObservations
+                    Log.d("ObservationListFragment", "User Observations Size: ${userObservations.size}")
+
+                    // Notify the adapter of the data change and pass the filtered list
+                    userBirdObservations.clear()
+                    userBirdObservations.addAll(userObservations)
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.e("ObservationListFragment", "Database Error: ${databaseError.message}")
+                }
+            })
+        } else {
+            Log.e("ObservationListFragment", "User is not authenticated.")
+        }
     }
 
     override fun onCreateView(
@@ -85,27 +111,20 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
         val plantLayoutManager = LinearLayoutManager(requireContext())
         lstBirds.layoutManager = plantLayoutManager
 
-        try{
-            // Create an instance of PlantAdapter and pass the OnItemClickListener
-            val adapter = ObservationAdapter(userBirdObservations)
-            adapter.setOnItemClickListener(this)
-            // Set the adapter to the RecyclerView
-            lstBirds.adapter = adapter
-        }catch (e:Exception){
-            Toast.makeText(activity,e.message,Toast.LENGTH_SHORT).show()
-            Log.d(ContentValues.TAG, e.message.toString())
-        }
+        // Set the adapter to the RecyclerView
+        lstBirds.adapter = adapter
+
     }
 
-    override fun onItemClick(bird: ObservationItem) {
+    override fun onItemClick(bird: BirdObservation) {
         // Handle the click event and navigate to a different fragment
         //Add data to bundle
         val bundle = Bundle()
-        bundle.putString("bird_name", bird.birdName)
-        bundle.putString("date", bird.date.toString())
-        bundle.putString("location", bird.location)
-        bundle.putString("notes", bird.notes)
-        bundle.putString("imageData", bird.image)
+        bundle.putString("bird_name", bird.birdSpecies)
+        bundle.putString("date", bird.dateTime.toString())
+        bundle.putString("location", bird.hotspot.toString())
+        bundle.putString("notes", bird.additionalNotes)
+        bundle.putString("imageData", bird.birdImage)
 
         try{
             val fragment = ObservationListFragment()

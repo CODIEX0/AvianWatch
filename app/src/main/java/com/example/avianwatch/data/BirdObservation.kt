@@ -11,4 +11,6 @@ data class BirdObservation(
     val birdImage: String?,
     val dateTime: String?,
     val hotspot: Hotspot
-)
+){
+    constructor() : this("", "", "", "", null, null, Hotspot())
+}

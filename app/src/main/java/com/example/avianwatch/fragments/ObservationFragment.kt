@@ -146,9 +146,11 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                             UUID.randomUUID().toString(),
                             getCityAndSuburbNameFromLatLng(latLng),
                             binding.etBirdName.text.toString(),
-                            0.0,//location.latitude,
-                            0.0//location.longitude
+                            latLng.latitude,
+                            latLng.longitude
+
                         )
+
                         val observation = BirdObservation(
                             Global.currentUser?.uid.toString(), //Store UID to create relationship
                             oid,
@@ -177,7 +179,7 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                             }
                         }
                     }
-                //}
+
 
         } else {
             // Request location permission
