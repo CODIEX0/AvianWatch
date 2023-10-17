@@ -1,7 +1,7 @@
 package com.example.avianwatch.fragments
 
 import android.Manifest
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,16 +12,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.avianwatch.R
 import com.example.avianwatch.data.BirdObservation
 import com.example.avianwatch.data.Hotspot
 import com.example.avianwatch.data.HotspotWithMarker
-import com.example.avianwatch.databinding.FragmentGoBirdingBinding
 import com.example.avianwatch.databinding.FragmentObservationBinding
 import com.example.avianwatch.objects.FirebaseManager
 import com.example.avianwatch.objects.Global
@@ -32,10 +29,8 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -76,8 +71,9 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                 .start()
         }
 
+
         binding.btnAddObservation.setOnClickListener {
-            addObservation()
+            addObservation(requireContext())
         }
 
         return binding.root
@@ -109,10 +105,12 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
 
                     // Add the marker to the map
                     val marker = gMap.addMarker(markerOptions)
-                    HotspotWithMarker(
+                    val hotspot_marker = HotspotWithMarker(
                         userObservation.hotspot,
                         marker
                     )
+                    //store the user's hotspot with a marker
+                    Global.hotspotsWithMarker.add(hotspot_marker)
                 }else{
 
                 }
@@ -120,7 +118,7 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    fun addObservation() {
+    fun addObservation(context: Context) {
         val imageData = Image.convertImageToBase64(binding.imgObservationImage).toString()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -147,6 +145,8 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                             location.latitude,
                             location.longitude
                         )
+                        //store the user's hotspot
+                        Global.hotspots.add(hotspot)
                         val observation = BirdObservation(
                             Global.currentUser?.uid.toString(), //Store UID to create relationship
                             oid,
@@ -168,10 +168,10 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                                     Global.observations = observations
 
                                 }
-                                Toast.makeText(requireContext(), "Observation Created Successfully!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Observation Created Successfully!", Toast.LENGTH_SHORT).show()
 
                             } else {
-                                Toast.makeText(requireContext(), "Observation Creation Failed...", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Observation Creation Failed...", Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -179,7 +179,7 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
 
         } else {
             // Request location permission
-            Toast.makeText(requireContext(), "Observation creation failed...", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Observation creation failed...", Toast.LENGTH_LONG).show()
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -189,7 +189,7 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
 
 
         if (binding.etBirdName.text.toString() == "") {
-            Toast.makeText(requireContext(), "Enter the bird species...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Enter the bird species...", Toast.LENGTH_SHORT).show()
             return
         }
         requireActivity().onBackPressed() // Navigate back to the previous screen

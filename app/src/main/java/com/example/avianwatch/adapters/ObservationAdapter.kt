@@ -7,10 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.R
+import com.example.avianwatch.data.BirdObservation
 import com.example.avianwatch.objects.Image
 import com.example.avianwatch.data.ObservationItem
 
-class ObservationAdapter(private val observation: List<ObservationItem>) : RecyclerView.Adapter<ObservationAdapter.ObservationViewHolder>() {
+class ObservationAdapter(private val observation: List<BirdObservation>) : RecyclerView.Adapter<ObservationAdapter.ObservationViewHolder>() {
 
     inner class ObservationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -19,15 +20,15 @@ class ObservationAdapter(private val observation: List<ObservationItem>) : Recyc
         val bird_image: ImageView = itemView.findViewById((R.id.imgBirdImage))
         val location: TextView = itemView.findViewById(R.id.txtLocation)
 
-        fun bind(observation: ObservationItem) {
-            name.text = observation.birdName
-            date.text = observation.date.toString()
-            location.text = observation.location
-            if (observation.image.equals("")) {
+        fun bind(observation: BirdObservation) {
+            name.text = observation.birdSpecies
+            date.text = observation.dateTime.toString()
+            location.text = observation.hotspot.locName
+            if (observation.birdImage.equals("")) {
                 bird_image.visibility = View.INVISIBLE
             } else {
                 bird_image.visibility = View.VISIBLE
-                Image.setBase64Image(observation.image,bird_image)
+                Image.setBase64Image(observation.birdImage,bird_image)
             }
         }
 
@@ -58,15 +59,15 @@ class ObservationAdapter(private val observation: List<ObservationItem>) : Recyc
         return observation.size
     }
 
-    fun updateObservationList(observationList: MutableList<ObservationItem>) {
-        var list: MutableList<ObservationItem> = observationList.toMutableList()
+    fun updateObservationList(observationList: MutableList<BirdObservation>) {
+        var list: MutableList<BirdObservation> = observationList.toMutableList()
         list.clear()
         list.addAll(observationList)
         notifyDataSetChanged()
     }
 
     interface OnItemClickListener {
-        fun onItemClick(bird: ObservationItem)
+        fun onItemClick(bird: BirdObservation)
     }
     private var onItemClickListener: OnItemClickListener? = null
 

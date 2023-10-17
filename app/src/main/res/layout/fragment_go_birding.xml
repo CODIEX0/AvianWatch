@@ -67,6 +67,22 @@
         app:maxImageSize="40dp" />
 
     <ImageButton
+            android:id="@+id/btnRefresh"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="24dp"
+            android:elevation="3dp"
+            android:background="#9FFFFFFF"
+            android:onClick="toggleMapType"
+            android:src="@drawable/baseline_refresh_24"
+            android:text="Satellite View"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.042" />
+
+    <ImageButton
         android:id="@+id/btnSatelliteToggle"
         android:layout_width="36dp"
         android:layout_height="36dp"

@@ -14,9 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
 import com.example.avianwatch.adapters.ObservationAdapter
+import com.example.avianwatch.adapters.PostAdapter
+import com.example.avianwatch.data.BirdObservation
 import com.example.avianwatch.objects.Image
 import com.example.avianwatch.data.ObservationItem
+import com.example.avianwatch.data.Post
 import com.example.avianwatch.databinding.FragmentObservationListBinding
+import com.example.avianwatch.objects.FirebaseManager
+import com.example.avianwatch.objects.Global
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -25,7 +30,6 @@ import java.util.Locale
 
 class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListener {
     private lateinit var auth: FirebaseAuth
-    lateinit var userBirdObservations: MutableList<ObservationItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,22 +41,9 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
         val dateFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault())
         val formattedDate = dateFormat.format(calendar.time)
 
-        auth = FirebaseAuth.getInstance()
-        val firebaseUser = auth.currentUser
-        val uid = firebaseUser?.uid
 
-        userBirdObservations = mutableListOf(
 
-            ObservationItem(
-                uid,
-                "Flamingo",
-                formattedDate,
-                "Halfway House, Midrand",
-                "A pair of Flamingos, they looked liked they were mating.",
-                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.mipmap.flamingo_pair)!!)
 
-                )
-        )
     }
 
     override fun onCreateView(
@@ -85,27 +76,44 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
         val plantLayoutManager = LinearLayoutManager(requireContext())
         lstBirds.layoutManager = plantLayoutManager
 
+        auth = FirebaseAuth.getInstance()
+        val firebaseUser = auth.currentUser
+        val uid = firebaseUser?.uid
+
         try{
-            // Create an instance of PlantAdapter and pass the OnItemClickListener
-            val adapter = ObservationAdapter(userBirdObservations)
-            adapter.setOnItemClickListener(this)
-            // Set the adapter to the RecyclerView
-            lstBirds.adapter = adapter
+            // Create an instance of ObservationAdapter and pass the OnItemClickListener
+            if (uid != null) {
+                FirebaseManager.getObservations(uid) { observation ->
+                    // Update the global posts list
+                    Global.observations = observation
+
+                    try{
+                        val adapter = ObservationAdapter(Global.observations)
+                        adapter.setOnItemClickListener(this)
+                        // Set the adapter to the RecyclerView
+                        lstBirds.adapter = adapter
+                    }catch (e:Exception){
+                        Toast.makeText(requireContext(),e.message, Toast.LENGTH_SHORT).show()
+                        Log.d(ContentValues.TAG, e.message.toString())
+                    }
+                }
+            }
+
         }catch (e:Exception){
             Toast.makeText(activity,e.message,Toast.LENGTH_SHORT).show()
             Log.d(ContentValues.TAG, e.message.toString())
         }
     }
 
-    override fun onItemClick(bird: ObservationItem) {
+    override fun onItemClick(bird: BirdObservation) {
         // Handle the click event and navigate to a different fragment
         //Add data to bundle
         val bundle = Bundle()
-        bundle.putString("bird_name", bird.birdName)
-        bundle.putString("date", bird.date.toString())
-        bundle.putString("location", bird.location)
-        bundle.putString("notes", bird.notes)
-        bundle.putString("imageData", bird.image)
+        bundle.putString("bird_name", bird.birdSpecies)
+        bundle.putString("date", bird.dateTime.toString())
+        bundle.putString("location", bird.hotspot.locName)
+        bundle.putString("notes", bird.additionalNotes)
+        bundle.putString("imageData", bird.birdImage)
 
         try{
             val fragment = ObservationListFragment()
