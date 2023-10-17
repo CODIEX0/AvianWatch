@@ -144,8 +144,8 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                             UUID.randomUUID().toString(),
                             getCityAndSuburbNameFromLatLng(latLng),
                             binding.etBirdName.text.toString(),
-                            0.0,//location.latitude,
-                            0.0//location.longitude
+                            latLng.latitude,
+                            latLng.longitude
                         )
                         //store the user's hotspot
                         Global.hotspots.add(hotspot)
@@ -177,7 +177,6 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                             }
                         }
                     }
-                //}
 
         } else {
             // Request location permission
