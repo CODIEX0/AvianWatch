@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -34,11 +35,23 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
+import javax.net.ssl.HttpsURLConnection
+
 class ObservationFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentObservationBinding
     private lateinit var locationCallback: LocationCallback
@@ -140,9 +153,16 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                     location?.let {
                         latLng = LatLng(location.latitude, location.longitude)
                     }
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val address = getAddressName(
+                            location!!.latitude,
+                            location.longitude,
+                            Global.googleMapsApiKey
+                        )
+
                         val hotspot = Hotspot(
                             UUID.randomUUID().toString(),
-                            getCityAndSuburbNameFromLatLng(latLng),
+                            address.toString(),
                             binding.etBirdName.text.toString(),
                             latLng.latitude,
                             latLng.longitude
@@ -159,10 +179,10 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                             hotspot
                         )
 
+
                         //Add observation to DB and update local storage
                         FirebaseManager.addObservation(observation) { isSuccess -> //Use callback to wait for results
-                            if (isSuccess)
-                            {
+                            if (isSuccess) {
                                 // add hotspot to map as a marker
                                 addBirdObservationOnMap(observation)
                                 //Update local observations list
@@ -170,12 +190,22 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                                     Global.observations = observations
 
                                 }
-                                Toast.makeText(context, "Observation Created Successfully!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "Observation Created Successfully!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
                             } else {
-                                Toast.makeText(context, "Observation Creation Failed...", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    context,
+                                    "Observation Creation Failed...",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
+                    }
+
                     }
 
         } else {
@@ -208,22 +238,48 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         binding.imgObservationImage.setImageURI(data?.data)
     }
 
-    private fun getCityAndSuburbNameFromLatLng(latLng: LatLng): String {
-        if (isAdded) {
-            val geocoder = Geocoder(requireContext(), Locale.getDefault())
+    // Function to perform reverse geocoding and get the address name
+    suspend fun getAddressName(latitude: Double, longitude: Double, apiKey: String): String? {
+        return withContext(Dispatchers.IO) {
+            val geocodingUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey"
+            var address: String? = null
+
             try {
-                val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val address = addresses[0]
-                    val city = address.locality ?: "Unknown City"
-                    val suburb = address.subLocality ?: "Unknown Suburb"
-                    return "$city, $suburb"
+                val url = URL(geocodingUrl)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connect()
+
+                if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+                    val inputStream = connection.inputStream
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    val response = StringBuilder()
+                    var line: String?
+                    while (reader.readLine().also { line = it } != null) {
+                        response.append(line)
+                    }
+                    inputStream.close()
+
+                    // Parse the JSON response
+                    val jsonResponse = JSONObject(response.toString())
+                    val status = jsonResponse.getString("status")
+
+                    if (status == "OK") {
+                        val results = jsonResponse.getJSONArray("results")
+                        if (results.length() > 0) {
+                            address = results.getJSONObject(0).getString("formatted_address")
+                        }
+                    }
                 }
+                connection.disconnect()
             } catch (e: IOException) {
-                e.printStackTrace()
+                Log.e("GeocodingError", "Error during geocoding: $e")
+            } catch (e: JSONException) {
+                Log.e("JsonError", "Error parsing JSON response: $e")
             }
+
+            address
         }
-        return "Unknown"
     }
 
 
