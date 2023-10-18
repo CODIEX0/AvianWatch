@@ -50,8 +50,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
-import javax.net.ssl.HttpsURLConnection
-
 class ObservationFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentObservationBinding
     private lateinit var locationCallback: LocationCallback
@@ -149,64 +147,65 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
             val formattedDate = dateFormat.format(calendar.time)
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
-                    var latLng: LatLng = LatLng(0.0,0.0)
                     location?.let {
-                        latLng = LatLng(location.latitude, location.longitude)
-                    }
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val address = getAddressName(
-                            location!!.latitude,
-                            location.longitude,
-                            Global.googleMapsApiKey
-                        )
+                        var latLng = LatLng(location.latitude, location.longitude)
 
-                        val hotspot = Hotspot(
-                            UUID.randomUUID().toString(),
-                            address.toString(),
-                            binding.etBirdName.text.toString(),
-                            latLng.latitude,
-                            latLng.longitude
-                        )
-                        //store the user's hotspot
-                        Global.hotspots.add(hotspot)
-                        val observation = BirdObservation(
-                            Global.currentUser?.uid.toString(), //Store UID to create relationship
-                            oid,
-                            binding.etBirdName.text.toString(),
-                            binding.etNotes.text.toString(),
-                            imageData,
-                            formattedDate,
-                            hotspot
-                        )
+                        var address: String?
+
+                        CoroutineScope(Dispatchers.Main).launch {
+                            address = getAddressName(
+                                location!!.latitude,
+                                location.longitude,
+                                Global.googleMapsApiKey
+                            )
 
 
-                        //Add observation to DB and update local storage
-                        FirebaseManager.addObservation(observation) { isSuccess -> //Use callback to wait for results
-                            if (isSuccess) {
-                                // add hotspot to map as a marker
-                                addBirdObservationOnMap(observation)
-                                //Update local observations list
-                                FirebaseManager.getObservations(Global.currentUser!!.uid.toString()) { observations ->
-                                    Global.observations = observations
+                            val hotspot = Hotspot(
+                                UUID.randomUUID().toString(),
+                                address.toString(),
+                                binding.etBirdName.text.toString(),
+                                latLng.latitude,
+                                latLng.longitude
+                            )
+                            //store the user's hotspot
+                            Global.hotspots.add(hotspot)
+                            val observation = BirdObservation(
+                                Global.currentUser?.uid.toString(), //Store UID to create relationship
+                                oid,
+                                binding.etBirdName.text.toString(),
+                                binding.etNotes.text.toString(),
+                                imageData,
+                                formattedDate,
+                                hotspot
+                            )
 
+                            //Add observation to DB and update local storage
+                            FirebaseManager.addObservation(observation) { isSuccess -> //Use callback to wait for results
+                                if (isSuccess) {
+                                    // add hotspot to map as a marker
+                                    addBirdObservationOnMap(observation)
+                                    //Update local observations list
+                                    FirebaseManager.getObservations(Global.currentUser!!.uid.toString()) { observations ->
+                                        Global.observations = observations
+
+                                    }
+                                    Toast.makeText(
+                                        context,
+                                        "Observation Created Successfully!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Observation Creation Failed...",
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 }
-                                Toast.makeText(
-                                    context,
-                                    "Observation Created Successfully!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Observation Creation Failed...",
-                                    Toast.LENGTH_LONG
-                                ).show()
                             }
                         }
                     }
-
-                    }
+                }
 
         } else {
             // Request location permission
@@ -236,6 +235,30 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
             super.onActivityResult(requestCode, resultCode, data)
         }
         binding.imgObservationImage.setImageURI(data?.data)
+    }
+
+
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_CODE
+            )
+        } else {
+            ImagePicker.with(this)
+                .crop()                     //crop image(optional), check customization for more options
+                .compress(1024)             //final image size will be less than 1 MB
+                .maxResultSize(1080,1080)   //final image resolution will be less than 1080 x 1080
+                .start()
+        }
+    }
+    companion object {
+        private const val CAMERA_PERMISSION_CODE = 100
+        private const val cameraRequestCode = 101
+        private const val REQUEST_LOCATION_PERMISSION = 123
     }
 
     // Function to perform reverse geocoding and get the address name
@@ -280,30 +303,6 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
 
             address
         }
-    }
-
-
-    private fun checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.CAMERA),
-                CAMERA_PERMISSION_CODE
-            )
-        } else {
-            ImagePicker.with(this)
-                .crop()                     //crop image(optional), check customization for more options
-                .compress(1024)             //final image size will be less than 1 MB
-                .maxResultSize(1080,1080)   //final image resolution will be less than 1080 x 1080
-                .start()
-        }
-    }
-    companion object {
-        private const val CAMERA_PERMISSION_CODE = 100
-        private const val cameraRequestCode = 101
-        private const val REQUEST_LOCATION_PERMISSION = 123
     }
 
     override fun onMapReady(map: GoogleMap) {
