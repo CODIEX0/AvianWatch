@@ -34,10 +34,17 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
     private lateinit var userId: String
     private lateinit var userBirdObservations: MutableList<BirdObservation>
     private lateinit var adapter: ObservationAdapter
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = FirebaseAuth.getInstance()
+        userBirdObservations = mutableListOf()
+        adapter = ObservationAdapter(userBirdObservations)
 
+<<<<<<< Updated upstream
         auth = FirebaseAuth.getInstance()
         userBirdObservations = mutableListOf()
         adapter = ObservationAdapter(userBirdObservations)
@@ -49,7 +56,13 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
         Log.d("ObservationListFragment", "User ID: $userId")
         // Load user's observations from Firebase
         loadUserObservations()
+=======
+        // Get the current user's UID and store it in userId
+        val firebaseUser = auth.currentUser
+        userId = firebaseUser?.uid ?: ""
+>>>>>>> Stashed changes
 
+        loadUserObservations()
     }
 
     private fun loadUserObservations() {
@@ -114,8 +127,6 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         val lstBirds = view.findViewById<RecyclerView>(R.id.rvObservationList)
 
         // Set up the LinearLayoutManager for the RecyclerView
