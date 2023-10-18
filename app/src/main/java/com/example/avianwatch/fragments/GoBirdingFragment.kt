@@ -1,6 +1,7 @@
 package com.example.avianwatch.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.ContentValues
 import android.content.pm.PackageManager
@@ -73,7 +74,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class GoBirdingFragment : Fragment(), OnMapReadyCallback {
+class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
     lateinit var binding: FragmentGoBirdingBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var mMap: GoogleMap
@@ -213,8 +214,16 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        // Set an info window click listener directly on the fragment
+        mMap.setOnInfoWindowClickListener { marker ->
+            // Handle info window click event here
+            val destination = marker.position
+            getDirections(destination)
+        }
 
         // Call zoomToCurrentLocation
         zoomToCurrentLocation()
@@ -235,17 +244,17 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                         val location: Location = locationResult.lastLocation!!
                         val latLng = LatLng(location.latitude, location.longitude)
 
-
-
-
+                        Global.location = location
                         // Draw the radius boundary
                         drawRadiusBoundary(location.latitude, location.longitude, userPreferences)
                         val marker = MarkerOptions()
                             .position(latLng)
                             .title("Current Location")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+
+                        Global.liveLocation = marker
                         // Add a marker to the map at the user's location
-                        mMap.addMarker(marker)
+                        mMap.addMarker(Global.liveLocation)
 
                         if (!hotspotsLoaded) {
                             // Load nearby hotspots using the global object and firebase real-time database
@@ -270,7 +279,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
 
 
 
-    private fun getDirections(origin: LatLng, destination: LatLng) {
+    private fun getDirections(destination: LatLng) {
         val apiKey = Global.googleMapsApiKey
         val geoApiContext = GeoApiContext.Builder()
             .apiKey(apiKey)
@@ -279,7 +288,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         GlobalScope.launch(Dispatchers.IO) {
             val result: DirectionsResult = DirectionsApi.newRequest(geoApiContext)
                 .mode(TravelMode.DRIVING)
-                .origin(origin.latitude.toString() + "," + origin.longitude.toString())
+                .origin(Global.location.latitude.toString() + "," + Global.location.longitude.toString())
                 .destination(destination.latitude.toString() + "," + destination.longitude.toString())
                 .await()
 
@@ -509,8 +518,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
         }
 
         if (!Global.hotspots.isNullOrEmpty()) {
-            // Clear existing markers
-            mMap.clear()
 
             // Add markers for hotspots on the main thread
             requireActivity().runOnUiThread {
@@ -640,5 +647,11 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
                     }
                 }
         }
+    }
+
+    override fun onInfoWindowClick(marker: Marker) {
+        // Handle info window click event here
+        val destination = marker.position
+        getDirections(destination)
     }
 }
