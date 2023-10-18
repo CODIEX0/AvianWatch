@@ -111,7 +111,7 @@ class SettingsFragment : Fragment() {
             preferencesRef.child(uid).setValue(userPreferences)
                 .addOnSuccessListener {
                     // preferences saved successfully
-                    requireActivity().onBackPressed() // Navigate back to the previous screen
+                    MainActivity().onBackPressed() // Navigate back to the previous screen
                 }
                 .addOnFailureListener {
                     Toast.makeText(requireContext(), "Couldn't update user preferences", Toast.LENGTH_SHORT).show()

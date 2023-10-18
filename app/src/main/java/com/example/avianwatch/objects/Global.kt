@@ -1,5 +1,6 @@
 package com.example.avianwatch.objects
 
+import android.location.Location
 import com.example.avianwatch.R
 import com.example.avianwatch.data.BirdFact
 import com.example.avianwatch.data.BirdObservation
@@ -10,6 +11,8 @@ import com.example.avianwatch.data.RouteData
 import com.example.avianwatch.data.StepData
 import com.example.avianwatch.data.User
 import com.example.avianwatch.data.UserPreferences
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 
 //Singleton class for storing live data
@@ -24,6 +27,8 @@ object Global {
     var observations: MutableList<BirdObservation> = mutableListOf()
     var hotspots: MutableList<Hotspot> = mutableListOf()
     var hotspotsWithMarker: MutableList<HotspotWithMarker> = mutableListOf()
+    lateinit var location: Location
+    lateinit var liveLocation: MarkerOptions
 
 
     //list of bird facts with corresponding image resource IDs
