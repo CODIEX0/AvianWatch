@@ -3,6 +3,7 @@ package com.example.avianwatch.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -222,8 +223,9 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         mMap.setOnInfoWindowClickListener { marker ->
             // Handle info window click event here
             val destination = marker.position
-            getDirections(destination)
+            getDirections(destination, listOf()) // Pass an empty list as waypoints
         }
+
 
         // Call zoomToCurrentLocation
         zoomToCurrentLocation()
@@ -279,18 +281,36 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
 
 
 
-    private fun getDirections(destination: LatLng) {
+    private fun getDirections(destination: LatLng, waypoints: List<LatLng>) {
         val apiKey = Global.googleMapsApiKey
         val geoApiContext = GeoApiContext.Builder()
             .apiKey(apiKey)
             .build()
 
+        // Show a ProgressDialog or loading indicator to inform the user
+        val progressDialog = ProgressDialog(requireContext())
+        progressDialog.setMessage("Calculating Best Route...")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
         GlobalScope.launch(Dispatchers.IO) {
-            val result: DirectionsResult = DirectionsApi.newRequest(geoApiContext)
+            val request = DirectionsApi.newRequest(geoApiContext)
                 .mode(TravelMode.DRIVING)
                 .origin(Global.location.latitude.toString() + "," + Global.location.longitude.toString())
                 .destination(destination.latitude.toString() + "," + destination.longitude.toString())
-                .await()
+
+            // Create a list of waypoints as a string
+            val waypointsStr = waypoints.joinToString("|") { "${it.latitude},${it.longitude}" }
+
+            // Set the waypoints with optimizeWaypoints option
+            request.waypoints("optimize:true|$waypointsStr")
+
+            val result: DirectionsResult = request.await()
+
+            // Dismiss the ProgressDialog when the route calculation is complete
+            withContext(Dispatchers.Main) {
+                progressDialog.dismiss()
+            }
 
             // Handle the result and display the directions on the map
             if (result.routes.isNotEmpty()) {
@@ -313,13 +333,15 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
                     val line = mMap.addPolyline(options)
                 }
             } else {
-                // Update the UI on the main thread
+                // Update the UI on the main thread to inform the user that no directions were found
                 withContext(Dispatchers.Main) {
                     Toast.makeText(requireContext(), "No directions found", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
+
+
 
 
 
@@ -652,6 +674,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
     override fun onInfoWindowClick(marker: Marker) {
         // Handle info window click event here
         val destination = marker.position
-        getDirections(destination)
+        getDirections(destination, listOf()) // Pass an empty list as waypoints
     }
 }
