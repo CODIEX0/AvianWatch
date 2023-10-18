@@ -314,15 +314,15 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
 
         // Get the user's preferences (e.g., maxRadius) from the UserPreferences class
         val localUserPreferences = UserPreferences()
-        val maxDistance : Double
+        val maxRadius = userPreferences.maxRadius.toDouble()
 
         if (userPreferences != null){
 
-            // Convert maxRadius to meters if unitSystem is "Metric," otherwise use yards
-            val maxRadiusInMeters = if (userPreferences.unitSystem == "Metric") {
-                maxDistance = userPreferences.maxRadius.toDouble() * 1000 // Convert kilometers to meters
+            // Convert maxRadius to kilometers based on the user's unit system preference
+            val maxDistance = if (userPreferences.unitSystem == "Metric") {
+                maxRadius // No conversion needed for metric system (already in kilometers)
             } else {
-                maxDistance = userPreferences.maxRadius.toDouble() * 1760.0 // Convert Miles to yards
+                maxRadius * 1.60934 // Convert miles to kilometers
             }
 
             val call = birdingApiService.getNearbyHotspots(latitude, longitude, maxDistance, Global.eBirdApiKey)
@@ -371,11 +371,11 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback {
             })
         }else{
 
-            // Convert maxRadius to meters if unitSystem is "Metric," otherwise use yards
-            val maxRadiusInMeters = if (localUserPreferences.unitSystem == "Metric") {
-                maxDistance = localUserPreferences.maxRadius.toDouble() * 1000 // Convert kilometers to meters
+            // Convert maxRadius to kilometers based on the user's unit system preference
+            val maxDistance = if (localUserPreferences.unitSystem == "Metric") {
+                maxRadius // No conversion needed for metric system (already in kilometers)
             } else {
-                maxDistance = localUserPreferences.maxRadius.toDouble() * 1760.0 // Convert Miles to yards
+                maxRadius * 1.60934 // Convert miles to kilometers
             }
 
             val call = birdingApiService.getNearbyHotspots(latitude, longitude, maxDistance, Global.eBirdApiKey)
