@@ -93,7 +93,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
     private var isSatelliteView = false // Flag to track the map type
     private var radiusCircle: Circle? = null //variable to hold the circle on the map
     private lateinit var userPreferences: UserPreferences
-    var hotspotsLoaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,6 +123,9 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentGoBirdingBinding.inflate(inflater, container, false)
+
+        val mainActivity = activity as MainActivity
+        mainActivity.updateTitle("Go Birding")
 
         // Initialize map fragment
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
@@ -239,7 +241,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
             // Create location request
             locationRequest = LocationRequest()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.interval = 100000 // Update location every 100 seconds
 
             // Create location callback
             locationCallback = object : LocationCallback() {
@@ -257,22 +258,18 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
                             .title("Current Location")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 
-                        Global.liveLocation = marker
-                        // Add a marker to the map at the user's location
-                        mMap.addMarker(Global.liveLocation)
+                        mMap.addMarker(marker)
 
-                        if (!hotspotsLoaded) {
-                            // Load nearby hotspots using the global object and firebase real-time database
-                            loadUsersHotspots()
 
-                            // Load nearby hotspots using Retrofit
-                            loadEBirdHotspots(location.latitude, location.longitude, userPreferences)
-
-                            hotspotsLoaded = true
-                        }
+                        // Load nearby hotspots using Retrofit
+                        loadEBirdHotspots(location.latitude, location.longitude, userPreferences)
+                        // Load nearby hotspots using the global object and firebase real-time database
+                        loadUsersHotspots()
                     }
                 }
             }
+
+
             // Start location updates
             startLocationUpdates()
 
@@ -392,161 +389,124 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         val localUserPreferences = UserPreferences()
         val maxRadius = userPreferences.maxRadius.toDouble()
 
-        if (userPreferences != null){
+        Log.d("GoBirdingFragment", "UserPreferences max Radius: ${userPreferences.maxRadius}")
 
-            // Convert maxRadius to kilometers based on the user's unit system preference
-            val maxDistance = if (userPreferences.unitSystem == "Metric") {
-                maxRadius // No conversion needed for metric system (already in kilometers)
-            } else {
-                maxRadius * 1.60934 // Convert miles to kilometers
-            }
-
-            // Call eBird API using Retrofit
-            val call = birdingApiService.getNearbyHotspots(latitude, longitude, maxDistance, Global.eBirdApiKey)
-
-            call.enqueue(object : Callback<List<Hotspot>> {
-                override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
-                    if (response.isSuccessful) {
-                        val hotspots = response.body()
-                        if (!hotspots.isNullOrEmpty()) {
-                            // Clear existing markers
-                            mMap.clear()
-
-                            // Add markers for hotspots on the main thread
-                            requireActivity().runOnUiThread {
-                                for (hotspot in hotspots) {
-                                    val hotspotLocation = LatLng(hotspot.lat, hotspot.lng)
-                                    val markerOptions = MarkerOptions()
-                                        .position(hotspotLocation)
-                                        .title(hotspot.comName)
-                                        .snippet(hotspot.locName)
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                                    val marker = mMap.addMarker(markerOptions)
-                                    // Store hotspot data in ViewModel or handle marker click as needed
-                                    if (marker != null) {
-                                        viewModel.addHotspot(hotspot, marker)
-                                    }
-                                }
-                            }
-                        } else {
-                            requireActivity().runOnUiThread {
-                                Toast.makeText(requireContext(), "Couldn't get online hotspots.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    } else {
-                        requireActivity().runOnUiThread {
-                            Log.d("hotspot exception","Failed to fetch birds hotspots. Please try again.")
-
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), "Error: " + t.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
-        }else{
-
-            // Convert maxRadius to kilometers based on the user's unit system preference
-            val maxDistance = if (localUserPreferences.unitSystem == "Metric") {
-                maxRadius // No conversion needed for metric system (already in kilometers)
-            } else {
-                maxRadius * 1.60934 // Convert miles to kilometers
-            }
-
-            val call = birdingApiService.getNearbyHotspots(latitude, longitude, maxDistance, Global.eBirdApiKey)
-            call.enqueue(object : Callback<List<Hotspot>> {
-                override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
-                    if (response.isSuccessful) {
-                        val hotspots = response.body()
-                        if (!hotspots.isNullOrEmpty()) {
-                            // Clear existing markers
-                            mMap.clear()
-
-                            // Add markers for hotspots on the main thread
-                            requireActivity().runOnUiThread {
-                                for (hotspot in hotspots) {
-                                    val hotspotLocation = LatLng(hotspot.lat, hotspot.lng)
-                                    val markerOptions = MarkerOptions()
-                                        .position(hotspotLocation)
-                                        .title(hotspot.comName)
-                                        .snippet(hotspot.locName)
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                                    val marker = mMap.addMarker(markerOptions)
-                                    // Store hotspot data in ViewModel or handle marker click as needed
-                                    if (marker != null) {
-                                        viewModel.addHotspot(hotspot, marker)
-                                    }
-                                }
-                            }
-                        } else {
-                            requireActivity().runOnUiThread {
-                                Toast.makeText(requireContext(), "Couldn't get online hotspots.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    } else {
-                        requireActivity().runOnUiThread {
-                            Log.d("hotspot exception","Failed to fetch birds hotspots. Please try again.")
-
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), "Error: " + t.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
+        // Convert maxRadius to kilometers based on the user's unit system preference
+        val maxDistance = if (userPreferences.unitSystem == "Metric") {
+            maxRadius // No conversion needed for metric system (already in kilometers)
+        } else {
+            maxRadius * 1.60934 // Convert miles to kilometers
         }
+
+        // Call eBird API using Retrofit
+        val call = birdingApiService.getNearbyHotspots(latitude, longitude, maxDistance, Global.eBirdApiKey)
+
+        call.enqueue(object : Callback<List<Hotspot>> {
+            override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
+                if (response.isSuccessful) {
+                    val hotspots = response.body()
+                    if (!hotspots.isNullOrEmpty()) {
+                        // Clear existing markers
+                        mMap.clear()
+
+                        // Add markers for hotspots on the main thread
+                        requireActivity().runOnUiThread {
+                            for (hotspot in hotspots) {
+                                val hotspotLocation = LatLng(hotspot.lat, hotspot.lng)
+                                val markerOptions = MarkerOptions()
+                                    .position(hotspotLocation)
+                                    .title(hotspot.comName)
+                                    .snippet(hotspot.locName)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                                mMap.addMarker(markerOptions)
+                                // Store hotspot data in ViewModel or handle marker click as needed
+                                if (markerOptions != null) {
+                                    viewModel.addHotspot(hotspot, markerOptions)
+                                }
+                            }
+                        }
+                    } else {
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(requireContext(), "Couldn't get online hotspots.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        Log.d("hotspot exception","Failed to fetch birds hotspots. Please try again.")
+
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Error: " + t.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
 
 
     }
 
     private fun loadUsersHotspots() {
-        auth = FirebaseAuth.getInstance()
-        val firebaseUser = auth.currentUser
-        val uid = firebaseUser?.uid.toString()
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        val uid = firebaseUser?.uid
 
-        FirebaseManager.getObservations(uid) { observation ->
-            try{
-                // Update the global hotspots list
-                for(ob in observation){
-                    Global.hotspots.add(ob.hotspot)
-                }
-            }catch (e:Exception){
-                Toast.makeText(requireContext(),e.message, Toast.LENGTH_SHORT).show()
-                Log.d(ContentValues.TAG, e.message.toString())
-            }
-        }
+        FirebaseManager.getObservations(uid.toString()) { observations ->
+            try {
 
-        if (!Global.hotspots.isNullOrEmpty()) {
+                Global.hotspots.clear() // Clear the hotspots list before adding new data
+                Global.hotspotsWithMarker.clear() // Clear the hotspots with marker list
 
-            // Add markers for hotspots on the main thread
-            requireActivity().runOnUiThread {
-                for ((index, hotspot) in Global.hotspots.withIndex()) {
-                    val hotspotLocation = LatLng(hotspot.lat, hotspot.lng)
-                    val markerOptions = MarkerOptions()
-                        .position(hotspotLocation)
-                        .title(hotspot.comName)
-                        .snippet(hotspot.locName)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    val marker = mMap.addMarker(markerOptions)
-                    // Store hotspot data in ViewModel or handle marker click as needed
-                    if (marker != null) {
-                        val hwm = HotspotWithMarker(hotspot, marker)
-                        Global.hotspotsWithMarker.add(index,hwm)
+                if (observations.isNotEmpty()) {
+                    val markerOptionsList = mutableListOf<MarkerOptions>()
+
+                    Global.observations = observations
+                    // Log the size of userObservations
+                    Log.d("ObservationListFragment", "User Observations Size: ${observations.size}")
+                    for (observation in observations) {
+                        val hotspot = observation.hotspot
+                        val hotspotLocation = LatLng(hotspot.lat, hotspot.lng)
+
+                        // Create marker options for each hotspot
+                        val markerOptions = MarkerOptions()
+                            .position(hotspotLocation)
+                            .title(hotspot.comName)
+                            .snippet(hotspot.locName)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+
+                        markerOptionsList.add(markerOptions)
+
+                        // Store hotspot data in ViewModel or handle marker click as needed
+                        val hwm = HotspotWithMarker(hotspot, markerOptions) // Initialize marker as null for now
+                        Global.hotspotsWithMarker.add(hwm)
+                    }
+
+                    // Add markers for hotspots on the main thread
+                    requireActivity().runOnUiThread {
+                        for (markerOptions in markerOptionsList) {
+                            mMap.addMarker(markerOptions)
+                            // Update the marker reference in Global.hotspotsWithMarker
+                            if (markerOptions != null) {
+                                val hwm = Global.hotspotsWithMarker.find { it.hotspot.lat == markerOptions.position.latitude && it.hotspot.lng == markerOptions.position.longitude }
+                                hwm?.marker = markerOptions
+                            }
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "User has no hotspots.", Toast.LENGTH_SHORT).show()
                     }
                 }
-            }
-        } else {
-            requireActivity().runOnUiThread {
-                Toast.makeText(requireContext(), "Couldn't get user's hotspots.", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("HotspotsError", "Error while loading hotspots: ${e.message}", e)
+                }
             }
         }
     }
+
 
     private fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(

@@ -35,10 +35,12 @@ class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
         // Inflate the layout for this fragment
         val binding = FragmentPostsBinding.inflate(inflater, container, false)
 
+        val mainActivity = activity as MainActivity
+        mainActivity.updateTitle("Posts")
+
         // go to the settings fragment
         binding.ibAddPost.setOnClickListener {
             // Access the MainActivity and call the function to update the tool bar title
-            val mainActivity = activity as MainActivity
             mainActivity.updateTitle("Add Post")
 
             val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
