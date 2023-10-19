@@ -241,30 +241,28 @@ object FirebaseManager {
         val observations = mutableListOf<BirdObservation>()
 
         val database = FirebaseDatabase.getInstance()
-        val observationRef = database.getReference(OBSERVATION_COLLECTION)
+        val observationRef = database.reference.child("BirdObservation")
 
-        // Query the observations based on the specified UID
-        observationRef.orderByChild("uid").equalTo(uid)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Iterate over the retrieved data snapshots
-                    for (snapshot in dataSnapshot.children) {
-                        // Retrieve the observation object from the snapshot
-                        val observation = snapshot.getValue(BirdObservation::class.java)
-                        observation?.let {
-                            // Add the observation to the list
-                            observations.add(it)
-                        }
+        observationRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for (snapshot in dataSnapshot.children) {
+                    val birdObservation = snapshot.getValue(BirdObservation::class.java)
+
+                    // Check if the "userID" matches the current user's UID
+                    if (birdObservation != null && birdObservation.userID == uid) {
+                        observations.add(birdObservation)
+                        Global.observations.add(birdObservation)
+
                     }
-                    // Invoke the callback function with the retrieved posts
-                    callback(observations)
                 }
+            }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // Handle the error
-                    callback(mutableListOf()) // Pass an empty list in case of error
-                }
-            })
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("ObservationListFragment", "Database Error: ${databaseError.message}")
+            }
+        })
+
     }
     fun addObservation(observation: BirdObservation, callback: (Boolean) -> Unit) {
         val database = FirebaseDatabase.getInstance()

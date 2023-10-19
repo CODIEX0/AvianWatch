@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.avianwatch.MainActivity
 import com.example.avianwatch.data.BirdObservation
 import com.example.avianwatch.data.Hotspot
 import com.example.avianwatch.data.HotspotWithMarker
@@ -74,6 +75,9 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         binding = FragmentObservationBinding.inflate(inflater, container, false)
 
+        val mainActivity = activity as MainActivity
+        mainActivity.updateTitle("Add Observation")
+
         ActivityCompat.requestPermissions(
             requireActivity(),
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -121,10 +125,10 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
 
                     // Add the marker to the map
-                    val marker = gMap.addMarker(markerOptions)
+                     gMap.addMarker(markerOptions)
                     val hotspot_marker = HotspotWithMarker(
                         userObservation.hotspot,
-                        marker
+                        markerOptions
                     )
                     //store the user's hotspot with a marker
                     Global.hotspotsWithMarker.add(hotspot_marker)
@@ -138,108 +142,100 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
     fun addObservation(context: Context) {
         val imageData = Image.convertImageToBase64(binding.imgObservationImage).toString()
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        // Function to handle the location permission and observation creation
+        fun handleLocationPermission() {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        // Check for location permission
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission granted, create an observation
-            val oid = UUID.randomUUID().toString()
-            // Get the current date
-            val calendar = Calendar.getInstance()
-            // Format the date to display in your desired format (e.g., "dd/MM/yyyy")
-            val dateFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault())
-            val formattedDate = dateFormat.format(calendar.time)
+            // Check for location permission
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, create an observation
+                val oid = UUID.randomUUID().toString()
+                // Get the current date
+                val calendar = Calendar.getInstance()
+                // Format the date to display in your desired format (e.g., "dd/MM/yyyy")
+                val dateFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault())
+                val formattedDate = dateFormat.format(calendar.time)
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location: Location? ->
+                        location?.let {
+                            var latLng = LatLng(location.latitude, location.longitude)
+                            var address: String?
 
-            // Request location updates
-            val locationRequest = LocationRequest.create().apply {
-                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                interval = 10000 // Update location every 10 seconds
-            }
+                            CoroutineScope(Dispatchers.Main).launch {
+                                try {
+                                    address = getCityAndSuburbNameFromLatLng(
+                                        location.latitude,
+                                        location.longitude,
+                                        Global.googleMapsApiKey
+                                    )
 
-            val locationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    locationResult?.lastLocation?.let { location ->
-                        fusedLocationClient.removeLocationUpdates(this) // Remove location updates
+                                    val hotspot = Hotspot(
+                                        UUID.randomUUID().toString(),
+                                        address.toString(),
+                                        binding.etBirdName.text.toString(),
+                                        latLng.latitude,
+                                        latLng.longitude
+                                    )
+                                    // Store the user's hotspot
+                                    Global.hotspots.add(hotspot)
+                                    val observation = BirdObservation(
+                                        Global.currentUser?.uid.toString(),
+                                        oid,
+                                        binding.etBirdName.text.toString(),
+                                        binding.etNotes.text.toString(),
+                                        imageData,
+                                        formattedDate,
+                                        hotspot
+                                    )
 
-                        // Handle location available here
-                        var latLng = LatLng(location.latitude, location.longitude)
-
-                        CoroutineScope(Dispatchers.Main).launch {
-                            try {
-                                val address = getCityAndSuburbNameFromLatLng(
-                                    latLng.latitude,
-                                    latLng.longitude,
-                                    Global.googleMapsApiKey
-                                )
-
-                                val hotspot = Hotspot(
-                                    UUID.randomUUID().toString(),
-                                    address,
-                                    binding.etBirdName.text.toString(),
-                                    latLng.latitude,
-                                    latLng.longitude
-                                )
-
-                                // Store the user's hotspot
-                                Global.hotspots.add(hotspot)
-                                val observation = BirdObservation(
-                                    Global.currentUser?.uid.toString(),
-                                    oid,
-                                    binding.etBirdName.text.toString(),
-                                    binding.etNotes.text.toString(),
-                                    imageData,
-                                    formattedDate,
-                                    hotspot
-                                )
-
-                                // Add observation to DB and update local storage
-                                FirebaseManager.addObservation(observation){
-                                    if (it) {
-                                        // Add hotspot to the map as a marker
-                                        addBirdObservationOnMap(observation)
-                                        // Update local observations list
-                                        FirebaseManager.getObservations(Global.currentUser!!.uid.toString()) { observations ->
-                                            Global.observations = observations
+                                    // Add observation to DB and update local storage
+                                    FirebaseManager.addObservation(observation) { isSuccess ->
+                                        if (isSuccess) {
+                                            // Add hotspot to the map as a marker
+                                            addBirdObservationOnMap(observation)
+                                            // Update local observations list
+                                            FirebaseManager.getObservations(Global.currentUser!!.uid.toString()) { observations ->
+                                                Global.observations = observations
+                                            }
+                                            Toast.makeText(
+                                                context,
+                                                "Observation Created Successfully!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Observation Creation Failed...",
+                                                Toast.LENGTH_LONG
+                                            ).show()
                                         }
-                                        Toast.makeText(context, "Observation Created Successfully!", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(context, "Observation Creation Failed...", Toast.LENGTH_LONG).show()
                                     }
+                                } catch (e: Exception) {
+                                    // Handle exceptions, e.g., location not available
+                                    Toast.makeText(context, "Observation creation failed...", Toast.LENGTH_LONG).show()
                                 }
 
-
-                            } catch (e: Exception) {
-                                // Handle exceptions, e.g., location not available
-                                Toast.makeText(context, "Observation creation failed...", Toast.LENGTH_LONG).show()
+                                if (binding.etBirdName.text.toString().isEmpty()) {
+                                    Toast.makeText(context, "Enter the bird species...", Toast.LENGTH_SHORT).show()
+                                }
                             }
-
-                            if (binding.etBirdName.text.toString().isEmpty()) {
-                                Toast.makeText(context, "Enter the bird species...", Toast.LENGTH_SHORT).show()
-                            }
-
-
                         }
                     }
-                }
+            } else {
+                // Request location permission
+                Toast.makeText(context, "Observation creation failed...", Toast.LENGTH_LONG).show()
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_LOCATION_PERMISSION
+                )
             }
-
-            // Start location updates
-            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
-        } else {
-            // Request location permission
-            Toast.makeText(context, "Observation creation failed...", Toast.LENGTH_LONG).show()
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
         }
-        requireActivity().onBackPressed()
+
+        // Check and handle location permission
+        handleLocationPermission()
+        requireActivity().onBackPressed() // Navigate back to the previous screen
     }
-
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -253,10 +249,10 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         binding.imgObservationImage.setImageURI(data?.data)
     }
 
-    private suspend fun getCityAndSuburbNameFromLatLng(latitude: Double, longitude: Double, apiKey: String): String {
+    private suspend fun getCityAndSuburbNameFromLatLng(latitude: Double, longitude: Double, apiKey: String): String? {
         return withContext(Dispatchers.IO) {
             val geocodingUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey"
-            var address: String? = null
+            var address: String? = null // Initialize as nullable
 
             try {
                 val url = URL(geocodingUrl)
@@ -292,9 +288,10 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                 Log.e("JsonError", "Error parsing JSON response: $e")
             }
 
-            address ?: "Unknown Address"
+            address
         }
     }
+
 
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
@@ -317,6 +314,31 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         private const val CAMERA_PERMISSION_CODE = 100
         private const val cameraRequestCode = 101
         private const val REQUEST_LOCATION_PERMISSION = 123
+    }
+
+    private val LOCATION_PERMISSION_REQUEST = 1  // A unique code for the permission request
+
+    // Check if the permission is granted, and request it if not
+    fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted; request it
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST)
+        } else {
+            // Permission is already granted
+            // Your code for accessing the location goes here
+        }
+    }
+
+    // Handle the result of the permission request
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, you can now access the location
+                // Your code for accessing the location goes here
+            } else {
+                // Permission denied, handle accordingly (e.g., show a message to the user)
+            }
+        }
     }
 
     override fun onMapReady(map: GoogleMap) {
