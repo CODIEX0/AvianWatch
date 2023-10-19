@@ -222,9 +222,8 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         mMap.setOnInfoWindowClickListener { marker ->
             // Handle info window click event here
             val destination = marker.position
-            getDirections(destination, listOf()) // Pass an empty list as waypoints
+            getDirections(destination)
         }
-
 
         // Call zoomToCurrentLocation
         zoomToCurrentLocation()
@@ -280,25 +279,18 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
 
 
 
-    private fun getDirections(destination: LatLng, waypoints: List<LatLng>) {
+    private fun getDirections(destination: LatLng) {
         val apiKey = Global.googleMapsApiKey
         val geoApiContext = GeoApiContext.Builder()
             .apiKey(apiKey)
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {
-            val request = DirectionsApi.newRequest(geoApiContext)
+            val result: DirectionsResult = DirectionsApi.newRequest(geoApiContext)
                 .mode(TravelMode.DRIVING)
                 .origin(Global.location.latitude.toString() + "," + Global.location.longitude.toString())
                 .destination(destination.latitude.toString() + "," + destination.longitude.toString())
-
-            // Create a list of waypoints as a string
-            val waypointsStr = waypoints.joinToString("|") { "${it.latitude},${it.longitude}" }
-
-            // Set the waypoints with optimizeWaypoints option
-            request.waypoints("optimize:true|$waypointsStr")
-
-            val result: DirectionsResult = request.await()
+                .await()
 
             // Handle the result and display the directions on the map
             if (result.routes.isNotEmpty()) {
@@ -328,7 +320,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
             }
         }
     }
-
 
 
 
@@ -661,6 +652,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
     override fun onInfoWindowClick(marker: Marker) {
         // Handle info window click event here
         val destination = marker.position
-        getDirections(destination, listOf()) // Pass an empty list as waypoints
+        getDirections(destination)
     }
 }
