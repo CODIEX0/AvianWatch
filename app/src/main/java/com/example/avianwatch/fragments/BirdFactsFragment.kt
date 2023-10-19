@@ -13,6 +13,12 @@ import com.example.avianwatch.R
 import com.example.avianwatch.objects.Global
 import com.example.avianwatch.databinding.FragmentBirdFactsBinding
 
+/* Code Attribution
+   Title: #13 Android Application Development with Kotlin - LayoutInflater
+   Link: https://www.youtube.com/watch?v=us1gp25WkCw
+   Author: Simplified Coding
+   Date: 2017
+*/
 class BirdFactsFragment : Fragment() {
 
     // Declare variables for the UI elements

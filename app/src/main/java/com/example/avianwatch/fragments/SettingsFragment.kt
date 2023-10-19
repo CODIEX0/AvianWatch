@@ -23,6 +23,12 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+/* Code Attribution
+   Title: How to Share Data between Fragment and Activity || Share Data using ViewModel || FoxAndroid || 2021
+   Link: https://www.youtube.com/watch?v=H_ItzJp5yVE
+   Author: Foxandroid
+   Date: 2021
+*/
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var preferencesRef: DatabaseReference

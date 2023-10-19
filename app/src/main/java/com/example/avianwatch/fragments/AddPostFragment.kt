@@ -17,6 +17,12 @@ import com.example.avianwatch.objects.Image.convertImageToBase64
 import com.github.dhaval2404.imagepicker.ImagePicker
 import java.util.UUID
 
+/* Code Attribution
+   Title: How to Use the Kotlin lateinit Modifier
+   Link: https://www.youtube.com/watch?v=G0iWHIDdMKs
+   Author: Donn Felker
+   Date: 2021
+*/
 class AddPostFragment : Fragment() {
     lateinit var binding: FragmentAddPostBinding
     val REQUEST_IMAGE_CAPTURE = 100
