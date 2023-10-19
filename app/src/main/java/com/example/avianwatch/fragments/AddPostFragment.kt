@@ -15,6 +15,7 @@ import com.example.avianwatch.objects.FirebaseManager
 import com.example.avianwatch.objects.Global
 import com.example.avianwatch.objects.Image.convertImageToBase64
 import com.github.dhaval2404.imagepicker.ImagePicker
+import java.util.UUID
 
 class AddPostFragment : Fragment() {
     lateinit var binding: FragmentAddPostBinding
@@ -52,9 +53,11 @@ class AddPostFragment : Fragment() {
         // Update the global users list
         val post = Post(
             Global.currentUser?.uid.toString(), //Store UID to create relationship
+            UUID.randomUUID().toString(),
             Global.currentUser?.username.toString(),
             binding.etText.text.toString(),
             0,
+            false,
             imageData
         )
         Global.posts.add(post)

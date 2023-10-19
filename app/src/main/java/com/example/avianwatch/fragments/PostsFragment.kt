@@ -63,14 +63,6 @@ class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
         FirebaseManager.getAllPosts { posts ->
             // Update the global posts list
             Global.posts = posts
-            post = Post(
-                "Mti2YdQD2JUYQJcnFUZRpNbiyQI2",
-                "Cody Ntuli",
-                "These birds like doing 10 – 15 circular laps just before sunset, around my neighborhood. Do you guys have any idea what does this mean?",
-                1243,
-                Image.drawableToBase64(ContextCompat.getDrawable(requireContext(), R.mipmap.post_bird)!!)
-            )
-            Global.posts.add(post)
 
             try{
                 // Create an instance of PlantAdapter and pass the OnItemClickListener
