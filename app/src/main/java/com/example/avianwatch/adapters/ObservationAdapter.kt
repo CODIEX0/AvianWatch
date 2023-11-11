@@ -23,7 +23,6 @@ class ObservationAdapter(private val observations: List<BirdObservation>) : Recy
             name.text = observation.birdSpecies
             date.text = observation.dateTime.toString()
             //location.text = observation.hotspot.toString()
-            //have to implement location
             location.text = observation.hotspot.locName
             notes.text = observation.additionalNotes
 
@@ -45,7 +44,6 @@ class ObservationAdapter(private val observations: List<BirdObservation>) : Recy
                     onItemClickListener?.onItemClick(bird)
                 }
             }
-
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ObservationViewHolder {

@@ -37,7 +37,6 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         auth = FirebaseAuth.getInstance()
         userBirdObservations = mutableListOf()
         adapter = ObservationAdapter(userBirdObservations)
@@ -49,7 +48,42 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
         Log.d("ObservationListFragment", "User ID: $userId")
         // Load user's observations from Firebase
         loadUserObservations()
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val binding = FragmentObservationListBinding.inflate(inflater, container, false)
+
+        val mainActivity = activity as MainActivity
+        mainActivity.updateTitle("My Observations")
+
+        // go to the add observation fragment
+        binding.ibAddObservation.setOnClickListener {
+            // Access the MainActivity and call the function to update the tool bar title
+            val mainActivity = activity as MainActivity
+            mainActivity.updateTitle("Add Observation")
+
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            val observationFragment = ObservationFragment()
+            fragmentTransaction.replace(R.id.fragment_container, observationFragment) // replace with the new fragment
+            fragmentTransaction.addToBackStack(null) //add to back stack
+            fragmentTransaction.commit()
+        }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val lstBirds = view.findViewById<RecyclerView>(R.id.rvObservationList)
+
+        // Set up the LinearLayoutManager for the RecyclerView
+        val plantLayoutManager = LinearLayoutManager(requireContext())
+        lstBirds.layoutManager = plantLayoutManager
+
+        // Set the adapter to the RecyclerView
+        lstBirds.adapter = adapter
     }
 
     private fun loadUserObservations() {
@@ -91,39 +125,6 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
         } else {
             Log.e("ObservationListFragment", "User is not authenticated.")
         }
-    }
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val binding = FragmentObservationListBinding.inflate(inflater, container, false)
-        // go to the settings fragment
-        binding.ibAddObservation.setOnClickListener {
-            // Access the MainActivity and call the function to update the tool bar title
-            val mainActivity = activity as MainActivity
-            mainActivity.updateTitle("Add Observation")
-
-            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            val observationFragment = ObservationFragment()
-            fragmentTransaction.replace(R.id.fragment_container, observationFragment) // replace with the new fragment
-            fragmentTransaction.addToBackStack(null) //add to back stack
-            fragmentTransaction.commit()
-        }
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val lstBirds = view.findViewById<RecyclerView>(R.id.rvObservationList)
-
-        // Set up the LinearLayoutManager for the RecyclerView
-        val plantLayoutManager = LinearLayoutManager(requireContext())
-        lstBirds.layoutManager = plantLayoutManager
-
-        // Set the adapter to the RecyclerView
-        lstBirds.adapter = adapter
     }
 
     override fun onItemClick(bird: BirdObservation) {

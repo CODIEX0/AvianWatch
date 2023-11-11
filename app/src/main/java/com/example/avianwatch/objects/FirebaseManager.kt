@@ -85,7 +85,7 @@ object FirebaseManager {
 
         // Add the post to the Firebase database using the id
         if (id != null) {
-            postRef.child(id).setValue(post)
+            postRef.child(post.pId).setValue(post)
                 .addOnSuccessListener {
                     // post added successfully
                     callback(true) // Invoke the success callback
@@ -100,29 +100,81 @@ object FirebaseManager {
         }
     }
 
-    //likes
-    fun updateLikes(likes: Int, callback: (Boolean) -> Unit) {
+
+    // Function to update the "likes" variable of an existing post
+    fun updatePostLikes(postId: String, likeStatus: Boolean, newLikes: Int, callback: (Boolean) -> Unit) {
         val database = FirebaseDatabase.getInstance()
         val postRef = database.getReference(POSTS_COLLECTION)
 
-        val id = Global.currentUser!!.uid
+        // Create a map to update only the "likes" field of the post
+        val likesUpdate = HashMap<String, Any>()
+        likesUpdate["likes"] = newLikes
 
-        // Add the like to the Firebase database using the generated ID
-        if (id != null) {
-            val likesRef = postRef.child(id).child("likes")
-            likesRef.setValue(likes)
-                .addOnSuccessListener {
-                    // likes updated successfully
-                    callback(true) // Invoke the success callback
-                }
-                .addOnFailureListener { exception ->
-                    // Error occurred while updating the likes
-                    //Do something with exception...
-                    callback(false) // Invoke the failure callback
-                }
-        } else {
-            callback(false) // Invoke the failure callback if like null
-        }
+        // Create a map to update only the "userHasLiked" field of the post
+        val statusUpdate = HashMap<String, Any>()
+        statusUpdate["userHasLiked"] = likeStatus
+
+        // Update the specified post's "likes" field
+        postRef.child(postId).updateChildren(likesUpdate)
+            .addOnSuccessListener {
+                // Likes updated successfully
+                callback(true) // Invoke the success callback
+            }
+            .addOnFailureListener { exception ->
+                // Error occurred while updating likes
+                // Handle the exception...
+                callback(false) // Invoke the failure callback
+            }
+
+        // Update the specified post's "userHasLiked" field
+        postRef.child(postId).updateChildren(statusUpdate)
+            .addOnSuccessListener {
+                // Likes updated successfully
+                callback(true) // Invoke the success callback
+            }
+            .addOnFailureListener { exception ->
+                // Error occurred while updating likes
+                // Handle the exception...
+                callback(false) // Invoke the failure callback
+            }
+    }
+
+    // Function to fetch the current "likes" count of a post
+    fun getPostLikesCount(postId: String, callback: (Int) -> Unit) {
+        val database = FirebaseDatabase.getInstance()
+        val postRef = database.getReference(POSTS_COLLECTION)
+
+        postRef.child(postId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val post = dataSnapshot.getValue(Post::class.java)
+                val likesCount = post?.likes ?: 0
+                callback(likesCount)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle database error
+                callback(0)
+            }
+        })
+    }
+
+    // Function to fetch the current "likes" count of a post
+    fun getPostLikesStatus(postId: String, callback: (Boolean) -> Unit) {
+        val database = FirebaseDatabase.getInstance()
+        val postRef = database.getReference(POSTS_COLLECTION)
+
+        postRef.child(postId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val post = dataSnapshot.getValue(Post::class.java)
+                val likesStatus = post?.userHasLiked ?: Boolean
+                callback(likesStatus as Boolean)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle database error
+                callback(false)
+            }
+        })
     }
 
     //usernames
@@ -133,7 +185,7 @@ object FirebaseManager {
 
         val usernameRef = userRef.child(uid).child("username")
 
-        // Query the workcoins based on the specified UID
+        // Query the username based on the specified UID
         usernameRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -189,30 +241,28 @@ object FirebaseManager {
         val observations = mutableListOf<BirdObservation>()
 
         val database = FirebaseDatabase.getInstance()
-        val observationRef = database.getReference(OBSERVATION_COLLECTION)
+        val observationRef = database.reference.child("BirdObservation")
 
-        // Query the observations based on the specified UID
-        observationRef.orderByChild("uid").equalTo(uid)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Iterate over the retrieved data snapshots
-                    for (snapshot in dataSnapshot.children) {
-                        // Retrieve the observation object from the snapshot
-                        val observation = snapshot.getValue(BirdObservation::class.java)
-                        observation?.let {
-                            // Add the observation to the list
-                            observations.add(it)
-                        }
+        observationRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for (snapshot in dataSnapshot.children) {
+                    val birdObservation = snapshot.getValue(BirdObservation::class.java)
+
+                    // Check if the "userID" matches the current user's UID
+                    if (birdObservation != null && birdObservation.userID == uid) {
+                        observations.add(birdObservation)
+                        Global.observations.add(birdObservation)
+
                     }
-                    // Invoke the callback function with the retrieved posts
-                    callback(observations)
                 }
+            }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // Handle the error
-                    callback(mutableListOf()) // Pass an empty list in case of error
-                }
-            })
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("ObservationListFragment", "Database Error: ${databaseError.message}")
+            }
+        })
+
     }
     fun addObservation(observation: BirdObservation, callback: (Boolean) -> Unit) {
         val database = FirebaseDatabase.getInstance()
@@ -239,3 +289,4 @@ object FirebaseManager {
     }
 
 }
+

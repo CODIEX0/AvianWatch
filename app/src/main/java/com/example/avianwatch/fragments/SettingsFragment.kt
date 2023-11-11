@@ -23,6 +23,12 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+/* Code Attribution
+   Title: How to Share Data between Fragment and Activity || Share Data using ViewModel || FoxAndroid || 2021
+   Link: https://www.youtube.com/watch?v=H_ItzJp5yVE
+   Author: Foxandroid
+   Date: 2021
+*/
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var preferencesRef: DatabaseReference
@@ -34,6 +40,9 @@ class SettingsFragment : Fragment() {
     ): View? {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        val mainActivity = activity as MainActivity
+        mainActivity.updateTitle("Settings")
 
         preferencesRef = FirebaseDatabase.getInstance().getReference("UserPreferences")
 
@@ -111,7 +120,7 @@ class SettingsFragment : Fragment() {
             preferencesRef.child(uid).setValue(userPreferences)
                 .addOnSuccessListener {
                     // preferences saved successfully
-                    requireActivity().onBackPressed() // Navigate back to the previous screen
+                    //MainActivity().onBackPressed() // Navigate back to the previous screen
                 }
                 .addOnFailureListener {
                     Toast.makeText(requireContext(), "Couldn't update user preferences", Toast.LENGTH_SHORT).show()

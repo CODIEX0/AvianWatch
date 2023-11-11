@@ -19,7 +19,7 @@ interface eBirdApiService {
     fun getNearbyHotspots(
         @Query("lat") latitude: Double,
         @Query("lng") longitude: Double,
-        @Query("maxDist") maxDistance: Double, // Maximum distance
+        @Query("dist") maxDistance: Double, // Maximum distance
         @Query("key") apiKey: String
     ): Call<List<Hotspot>> // return nearby hotspots
 }
