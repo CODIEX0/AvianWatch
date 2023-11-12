@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".fragments.Personal_Settings_Fragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Personal Details"
+            android:textSize="25dp"
+            tools:layout_editor_absoluteX="86dp"
+            tools:layout_editor_absoluteY="46dp" />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName"
+            android:layout_width="290dp"
+            android:layout_height="59dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="216dp"
+            android:layout_marginEnd="61dp"
+            android:drawableRight="@drawable/baseline_edit_24"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Username"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextTextEmailAddress"
+            android:layout_width="290dp"
+            android:layout_height="59dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="320dp"
+            android:layout_marginEnd="61dp"
+            android:drawableRight="@drawable/baseline_edit_24"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:text="Email Address"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="116dp"
+            android:layout_marginTop="432dp"
+            android:layout_marginEnd="117dp"
+            android:text="Save Changes"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

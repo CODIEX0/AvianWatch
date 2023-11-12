@@ -26,7 +26,7 @@
         >
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cvGoBirding"
+            android:id="@+id/cvAddObservation"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
@@ -37,6 +37,47 @@
             android:layout_rowWeight="1"
             android:layout_row="1"
             android:layout_column="0">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/addobservation"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Observation"
+                    android:layout_gravity="center_horizontal"
+
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/background_color"/>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+
+            android:id="@+id/cvGoBirding"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="12dp"
+            android:backgroundTint="@color/button_color"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_row="2"
+            android:layout_column="1">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,57 +100,23 @@
                     android:textStyle="bold"
                     android:textColor="@color/background_color"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cvAddObservation"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="12dp"
-            android:backgroundTint="@color/button_color"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_row="1"
-            android:layout_column="1">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/observation"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add Observation"
-                    android:layout_gravity="center_horizontal"
-
-                    android:textSize="18dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/background_color"/>
-            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
 
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cvMyAviary"
+            android:id="@+id/cvCommunity"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            app:cardCornerRadius="15dp"
             android:backgroundTint="@color/button_color"
+            app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
+
             android:layout_row="2"
             android:layout_column="0">
 
@@ -123,12 +130,12 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/bird_house"/>
+                    android:src="@mipmap/community"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My Aviary"
+                    android:text="Community"
                     android:layout_gravity="center_horizontal"
                     android:textSize="18dp"
                     android:textStyle="bold"
@@ -146,7 +153,7 @@
             app:cardElevation="12dp"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
-            android:layout_row="2"
+            android:layout_row="1"
             android:layout_column="1">
 
             <LinearLayout
@@ -159,7 +166,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/bird_fact"/>
+                    android:src="@mipmap/bird_facts"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -174,6 +181,43 @@
 
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cvMyObservations"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="15dp"
+            android:backgroundTint="@color/button_color"
+            app:cardElevation="12dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_row="3"
+            android:layout_column="0">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/observations"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_observations"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/background_color"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/cvSettings"
             android:layout_width="150dp"
             android:layout_height="150dp"
@@ -183,8 +227,9 @@
             android:backgroundTint="@color/button_color"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
+
             android:layout_row="3"
-            android:layout_column="0">
+            android:layout_column="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -207,42 +252,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/background_color"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cvCommunity"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/button_color"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="12dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_row="3"
-            android:layout_column="1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/post"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Community"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="18dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/background_color"/>
-            </LinearLayout>
         </androidx.cardview.widget.CardView>
     </GridLayout>
 

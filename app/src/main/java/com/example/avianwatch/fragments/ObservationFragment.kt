@@ -1,40 +1,36 @@
 package com.example.avianwatch.fragments
 
 import android.Manifest
+import android.R
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.data.BirdObservation
-import com.example.avianwatch.data.Hotspot
-import com.example.avianwatch.data.HotspotWithMarker
 import com.example.avianwatch.databinding.FragmentObservationBinding
 import com.example.avianwatch.objects.FirebaseManager
 import com.example.avianwatch.objects.Global
+import com.example.avianwatch.objects.Global.birdSpecies
+import com.example.avianwatch.objects.Global.currentLocation
+import com.example.avianwatch.objects.Global.selectedBirdName
 import com.example.avianwatch.objects.Image
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,14 +55,9 @@ import java.util.UUID
 */
 class ObservationFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentObservationBinding
-    private lateinit var locationCallback: LocationCallback
-    private lateinit var locationRequest: LocationRequest
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var gMap: GoogleMap
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var adapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,11 +69,44 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         val mainActivity = activity as MainActivity
         mainActivity.updateTitle("Add Observation")
 
+        // Initialize the FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        // Check location permissions
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    location?.let {
+                        currentLocation = it
+                        // Handle the user's last known location
+                        Log.d("User Location:"," ${it.latitude}, ${it.longitude}")
+                    } ?: run {
+                        // Handle the case where the last known location is not available
+                    }
+                }
+        } else {
+            // Request location permissions
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST
+            )
+        }
+
         ActivityCompat.requestPermissions(
             requireActivity(),
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
             REQUEST_LOCATION_PERMISSION
         )
+
+        val autoCompleteTextView = binding.etBirdName
+        val adapter = ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, birdSpecies)
+        autoCompleteTextView.setAdapter(adapter)
+
 
         binding.btnCamera.setOnClickListener {
             ImagePicker.with(this)
@@ -98,45 +122,6 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
         }
 
         return binding.root
-    }
-
-    fun addBirdObservationOnMap(userObservation: BirdObservation) {
-        // Create location request
-        locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 10000 // Update location every 10 seconds
-
-        // Create location callback
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-                if (locationResult.lastLocation != null) {
-                    val location: Location = locationResult.lastLocation!!
-                    val latLng = LatLng(location.latitude, location.longitude)
-
-                    // Create a LatLng object for the observation location
-                    val observationLocation = LatLng(latLng.latitude, latLng.longitude)
-
-                    // Create a MarkerOptions object for the bird observation
-                    val markerOptions = MarkerOptions()
-                        .position(observationLocation)
-                        .title(userObservation.birdSpecies)
-                        .snippet(userObservation.additionalNotes)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-
-                    // Add the marker to the map
-                     gMap.addMarker(markerOptions)
-                    val hotspot_marker = HotspotWithMarker(
-                        userObservation.hotspot,
-                        markerOptions
-                    )
-                    //store the user's hotspot with a marker
-                    Global.hotspotsWithMarker.add(hotspot_marker)
-                }else{
-
-                }
-            }
-        }
     }
 
     fun addObservation(context: Context) {
@@ -155,72 +140,55 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                 // Format the date to display in your desired format (e.g., "dd/MM/yyyy")
                 val dateFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault())
                 val formattedDate = dateFormat.format(calendar.time)
-                fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location: Location? ->
-                        location?.let {
-                            var latLng = LatLng(location.latitude, location.longitude)
-                            var address: String?
 
-                            CoroutineScope(Dispatchers.Main).launch {
-                                try {
-                                    address = getCityAndSuburbNameFromLatLng(
-                                        location.latitude,
-                                        location.longitude,
-                                        Global.googleMapsApiKey
-                                    )
+                CoroutineScope(Dispatchers.Main).launch {
+                    try {
+                        binding.etBirdName.setOnItemClickListener { _, _, position, _ ->
+                            selectedBirdName = adapter.getItem(position).toString()
+                            // Handle the selected bird name, e.g., display it or add it to the observation
+                        }
+                        val observation = BirdObservation(
+                            Global.currentUser?.uid.toString(),
+                            oid,
+                            binding.etBirdName.text.toString(),
+                            binding.etNotes.text.toString(),
+                            imageData,
+                            formattedDate,
+                            binding.etLocation.text.toString()
+                        )
 
-                                    val hotspot = Hotspot(
-                                        UUID.randomUUID().toString(),
-                                        address.toString(),
-                                        binding.etBirdName.text.toString(),
-                                        latLng.latitude,
-                                        latLng.longitude
-                                    )
-                                    // Store the user's hotspot
-                                    Global.hotspots.add(hotspot)
-                                    val observation = BirdObservation(
-                                        Global.currentUser?.uid.toString(),
-                                        oid,
-                                        binding.etBirdName.text.toString(),
-                                        binding.etNotes.text.toString(),
-                                        imageData,
-                                        formattedDate,
-                                        hotspot
-                                    )
-
-                                    // Add observation to DB and update local storage
-                                    FirebaseManager.addObservation(observation) { isSuccess ->
-                                        if (isSuccess) {
-                                            // Add hotspot to the map as a marker
-                                            addBirdObservationOnMap(observation)
-                                            // Update local observations list
-                                            FirebaseManager.getObservations(Global.currentUser!!.uid.toString()) { observations ->
-                                                Global.observations = observations
-                                            }
-                                            Toast.makeText(
-                                                context,
-                                                "Observation Created Successfully!",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        } else {
-                                            Toast.makeText(
-                                                context,
-                                                "Observation Creation Failed...",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
-                                    }
-                                } catch (e: Exception) {
-                                    // Handle exceptions, e.g., location not available
-                                    Toast.makeText(context, "Observation creation failed...", Toast.LENGTH_LONG).show()
+                        // Add observation to DB and update local storage
+                        FirebaseManager.addObservation(observation) { isSuccess ->
+                            if (isSuccess) {
+                                // Add hotspot to the map as a marker
+                                //addBirdObservationOnMap(observation)
+                                // Update local observations list
+                                FirebaseManager.getObservations(Global.currentUser!!.uid.toString()) { observations ->
+                                    Global.observations = observations
                                 }
-
-                                if (binding.etBirdName.text.toString().isEmpty()) {
-                                    Toast.makeText(context, "Enter the bird species...", Toast.LENGTH_SHORT).show()
-                                }
+                                Toast.makeText(
+                                    context,
+                                    "Observation Created Successfully!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Observation Creation Failed...",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
+                    } catch (e: Exception) {
+                        // Handle exceptions, e.g., location not available
+                        Toast.makeText(context, "Observation creation failed...", Toast.LENGTH_LONG).show()
                     }
+
+                    if (binding.etBirdName.text.toString().isEmpty()) {
+                        Toast.makeText(context, "Enter the bird species...", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
             } else {
                 // Request location permission
                 Toast.makeText(context, "Observation creation failed...", Toast.LENGTH_LONG).show()
@@ -250,7 +218,7 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
     }
 
     private suspend fun getCityAndSuburbNameFromLatLng(latitude: Double, longitude: Double, apiKey: String): String? {
-        return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {this
             val geocodingUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey"
             var address: String? = null // Initialize as nullable
 
@@ -279,7 +247,11 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
                         if (results.length() > 0) {
                             address = results.getJSONObject(0).getString("formatted_address")
                         }
+                    }else{
+                        Log.e("GeocodingError", "connection Error")
                     }
+                }else{
+                    Log.e("connection error", "Connection Error")
                 }
                 connection.disconnect()
             } catch (e: IOException) {
@@ -287,7 +259,6 @@ class ObservationFragment : Fragment(), OnMapReadyCallback {
             } catch (e: JSONException) {
                 Log.e("JsonError", "Error parsing JSON response: $e")
             }
-
             address
         }
     }

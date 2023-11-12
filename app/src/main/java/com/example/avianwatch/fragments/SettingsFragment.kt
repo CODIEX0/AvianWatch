@@ -62,7 +62,7 @@ class SettingsFragment : Fragment() {
             viewModel.updateMaxRadiusText(progress)
         }
 
-        // Set up maxRadiusSeekBar (assuming you have a reference to it)
+        // Set up maxRadiusSeekBar
         binding.maxRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 // Update the ViewModel with the progress
@@ -71,11 +71,11 @@ class SettingsFragment : Fragment() {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // Not needed
+
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // Not needed
+
             }
         })
         return view
@@ -95,10 +95,11 @@ class SettingsFragment : Fragment() {
                         }
                         binding.maxRadiusSeekBar.progress = userPreferences.maxRadius
                     }
+                    Toast.makeText(requireContext(), "Your preferences were retrieved successfully.", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    Toast.makeText(requireContext(), "Couldn't retrieve your user preferences", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Couldn't retrieve your user preferences!", Toast.LENGTH_SHORT).show()
                 }
             })
         }
@@ -121,9 +122,10 @@ class SettingsFragment : Fragment() {
                 .addOnSuccessListener {
                     // preferences saved successfully
                     //MainActivity().onBackPressed() // Navigate back to the previous screen
+                    Toast.makeText(requireContext(), "User preferences updated successfully.", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Couldn't update user preferences", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Couldn't update user preferences!", Toast.LENGTH_SHORT).show()
                 }
         }
     }

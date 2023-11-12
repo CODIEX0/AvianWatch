@@ -3,7 +3,6 @@ package com.example.avianwatch.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Point
@@ -23,55 +22,29 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
-import com.example.avianwatch.adapters.ObservationAdapter
 import com.example.avianwatch.api.eBirdApiService
 import com.example.avianwatch.objects.Global
 import com.example.avianwatch.data.Hotspot
-import com.example.avianwatch.data.HotspotWithMarker
 import com.example.avianwatch.data.UserPreferences
 import com.example.avianwatch.databinding.BslOptionsBinding
 import com.example.avianwatch.databinding.FragmentGoBirdingBinding
 import com.example.avianwatch.model.GoBirdingViewModel
-import com.example.avianwatch.objects.FirebaseManager
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.example.avianwatch.objects.Global.currentLocation
+import com.example.avianwatch.objects.RetrofitClientInstance
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.maps.DirectionsApi
-import com.google.maps.DirectionsApiRequest
 import com.google.maps.GeoApiContext
 import com.google.maps.internal.PolylineEncoding
 import com.google.maps.model.DirectionsResult
 import com.google.maps.model.TravelMode
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 /* Code Attribution
    Title: Fragments Implementation using Kotlin || Fragments using Kotlin || Android Studio Tutorial || 2023
@@ -81,7 +54,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 */
 class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
     lateinit var binding: FragmentGoBirdingBinding
-    private lateinit var auth: FirebaseAuth
     private lateinit var mMap: GoogleMap
     private lateinit var preferencesRef: DatabaseReference
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -199,28 +171,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         dialog.show()
     }
 
-    object RetrofitClientInstance {
-        private const val BASE_URL = "https://api.ebird.org/v2/" // eBird API base URL
-
-        private val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        private val client = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
-
-        private val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        fun getRetrofitInstance(): Retrofit {
-            return retrofit
-        }
-    }
-
     @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -231,7 +181,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
             val destination = marker.position
             getDirections(destination)
         }
-
         // Call zoomToCurrentLocation
         zoomToCurrentLocation()
 
@@ -250,7 +199,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
                         val location: Location = locationResult.lastLocation!!
                         val latLng = LatLng(location.latitude, location.longitude)
 
-                        Global.location = location
+                        currentLocation = location
                         // Draw the radius boundary
                         drawRadiusBoundary(location.latitude, location.longitude, userPreferences)
                         val marker = MarkerOptions()
@@ -260,26 +209,18 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
 
                         mMap.addMarker(marker)
 
-
                         // Load nearby hotspots using Retrofit
                         loadEBirdHotspots(location.latitude, location.longitude, userPreferences)
-                        // Load nearby hotspots using the global object and firebase real-time database
-                        loadUsersHotspots()
                     }
                 }
             }
-
-
             // Start location updates
             startLocationUpdates()
-
         } else {
             // Request location permissions
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
         }
     }
-
-
 
     private fun getDirections(destination: LatLng) {
         val apiKey = Global.googleMapsApiKey
@@ -290,7 +231,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         GlobalScope.launch(Dispatchers.IO) {
             val result: DirectionsResult = DirectionsApi.newRequest(geoApiContext)
                 .mode(TravelMode.DRIVING)
-                .origin(Global.location.latitude.toString() + "," + Global.location.longitude.toString())
+                .origin(currentLocation!!.latitude.toString() + "," + currentLocation!!.longitude.toString())
                 .destination(destination.latitude.toString() + "," + destination.longitude.toString())
                 .await()
 
@@ -323,9 +264,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         }
     }
 
-
-
-
     // Function to calculate zoom level to fit the entire maxRadius on the screen
     private fun calculateZoomLevel(centerLatLng: LatLng, maxRadius: Double): Float {
         val screenSize = Point()
@@ -334,7 +272,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
 
         val zoomLevel = (Math.log(156543.03392 * maxRadius * 2.0 / screenSize.x) / Math.log(2.0)).toFloat()
 
-        // Ensure that the zoom level is within a reasonable range (e.g., 2 to 20)
         return zoomLevel.coerceIn(2f, 20f)
     }
 
@@ -416,7 +353,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
                                 val markerOptions = MarkerOptions()
                                     .position(hotspotLocation)
                                     .title(hotspot.comName)
-                                    .snippet(hotspot.locName)
+                                    .snippet(hotspot.locName + "\n" + hotspot.lat + ", " + hotspot.lng)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
                                 mMap.addMarker(markerOptions)
                                 // Store hotspot data in ViewModel or handle marker click as needed
@@ -432,8 +369,8 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        Log.d("hotspot exception","Failed to fetch birds hotspots. Please try again.")
-
+                        Log.d("hotspot exception","Failed to fetch bird hotspots. Please try again.")
+                        Toast.makeText(requireContext(), "Failed to fetch e-bird hotspots. Please refresh screen.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -444,69 +381,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
                 }
             }
         })
-
-
     }
-
-    private fun loadUsersHotspots() {
-        val firebaseUser = FirebaseAuth.getInstance().currentUser
-        val uid = firebaseUser?.uid
-
-        FirebaseManager.getObservations(uid.toString()) { observations ->
-            try {
-
-                Global.hotspots.clear() // Clear the hotspots list before adding new data
-                Global.hotspotsWithMarker.clear() // Clear the hotspots with marker list
-
-                if (observations.isNotEmpty()) {
-                    val markerOptionsList = mutableListOf<MarkerOptions>()
-
-                    Global.observations = observations
-                    // Log the size of userObservations
-                    Log.d("ObservationListFragment", "User Observations Size: ${observations.size}")
-                    for (observation in observations) {
-                        val hotspot = observation.hotspot
-                        val hotspotLocation = LatLng(hotspot.lat, hotspot.lng)
-
-                        // Create marker options for each hotspot
-                        val markerOptions = MarkerOptions()
-                            .position(hotspotLocation)
-                            .title(hotspot.comName)
-                            .snippet(hotspot.locName)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-
-                        markerOptionsList.add(markerOptions)
-
-                        // Store hotspot data in ViewModel or handle marker click as needed
-                        val hwm = HotspotWithMarker(hotspot, markerOptions) // Initialize marker as null for now
-                        Global.hotspotsWithMarker.add(hwm)
-                    }
-
-                    // Add markers for hotspots on the main thread
-                    requireActivity().runOnUiThread {
-                        for (markerOptions in markerOptionsList) {
-                            mMap.addMarker(markerOptions)
-                            // Update the marker reference in Global.hotspotsWithMarker
-                            if (markerOptions != null) {
-                                val hwm = Global.hotspotsWithMarker.find { it.hotspot.lat == markerOptions.position.latitude && it.hotspot.lng == markerOptions.position.longitude }
-                                hwm?.marker = markerOptions
-                            }
-                        }
-                    }
-                } else {
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), "User has no hotspots.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } catch (e: Exception) {
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                    Log.e("HotspotsError", "Error while loading hotspots: ${e.message}", e)
-                }
-            }
-        }
-    }
-
 
     private fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(
@@ -530,11 +405,7 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -579,7 +450,6 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
             )
         }
     }
-
 
     // Function to toggle between standard and satellite map views
     private fun toggleMapType() {
