@@ -11,7 +11,6 @@
         android:label="Sign Up"
         tools:layout="@layout/activity_register"/>
 
-
     <activity
         android:id="@+id/activity_Login"
         android:name="com.example.avianwatch.LoginActivity"
@@ -23,7 +22,6 @@
         android:name="com.example.avianwatch.MainActivity"
         android:label="Main"
         tools:layout="@layout/activity_main"/>
-
 
     <fragment
         android:id="@+id/navigation_home"

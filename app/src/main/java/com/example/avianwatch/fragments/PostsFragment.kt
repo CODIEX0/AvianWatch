@@ -36,7 +36,7 @@ class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
         val binding = FragmentPostsBinding.inflate(inflater, container, false)
 
         val mainActivity = activity as MainActivity
-        mainActivity.updateTitle("Posts")
+        mainActivity.updateTitle("Community")
 
         // go to the settings fragment
         binding.ibAddPost.setOnClickListener {

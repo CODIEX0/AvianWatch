@@ -104,7 +104,7 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
 
                         // Check if the "userID" matches the current user's UID
                         if (birdObservation != null && birdObservation.userID == uid) {
-                            Log.d("ObservationListFragment", "Additional Notes: ${birdObservation.additionalNotes}")
+                            Log.d("ObservationListFragment", "name: ${birdObservation.birdSpecies}")
                             userObservations.add(birdObservation)
                         }
                     }
@@ -133,7 +133,7 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
         val bundle = Bundle()
         bundle.putString("bird_name", bird.birdSpecies)
         bundle.putString("date", bird.dateTime.toString())
-        bundle.putString("location", bird.hotspot.locName)
+        bundle.putString("location", bird.location)
         bundle.putString("notes", bird.additionalNotes)
         bundle.putString("imageData", bird.birdImage)
 
@@ -142,7 +142,7 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
             fragment.arguments = bundle
 
             //Navigate to fragment, passing bundle
-            //findNavController().navigate(R.id.action_ObservationListFragment_to_ViewPlantFragment, bundle)
+            //findNavController().navigate(R.id.action_ObservationListFragment_to_ViewObservationFragment, bundle)
         }catch (e:Exception){
             Toast.makeText(activity,e.message, Toast.LENGTH_SHORT).show()
             Log.d(ContentValues.TAG, e.message.toString())

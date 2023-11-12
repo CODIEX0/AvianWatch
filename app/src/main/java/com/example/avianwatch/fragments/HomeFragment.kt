@@ -1,6 +1,7 @@
 package com.example.avianwatch.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import com.example.avianwatch.MainActivity
 import com.example.avianwatch.R
 import com.example.avianwatch.databinding.FragmentHomeBinding
+import com.example.avianwatch.objects.Global
 
 class HomeFragment : Fragment() {
 
@@ -39,7 +41,7 @@ class HomeFragment : Fragment() {
             replaceFragment(ObservationFragment())
         }
 
-        binding.cvMyAviary.setOnClickListener {
+        binding.cvMyObservations.setOnClickListener {
             // Access the MainActivity and call the function to update the tool bar title
             val mainActivity = activity as MainActivity
             mainActivity.updateTitle("My Observations")

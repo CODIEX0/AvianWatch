@@ -3,29 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn = "navigation_view"
     >
+
+    <item
+        android:id="@+id/nav_bird_facts"
+        android:icon="@mipmap/bird_fact"
+        android:fontFamily="sans-serif-condensed-light"
+        android:title="Bird Facts"/>
+    <item
+        android:id="@+id/nav_blogs"
+        android:icon="@mipmap/posts"
+        android:fontFamily="sans-serif-condensed-light"
+        android:title="Community"/>
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/baseline_dashboard_24"
         android:fontFamily="sans-serif-condensed-light"
         android:title="Dashboard"/>
     <item
-        android:id="@+id/nav_view_birds"
-        android:icon="@mipmap/bird_house"
-        android:fontFamily="sans-serif-condensed-light"
-        android:title="My Aviary"/>
-    <item
-        android:id="@+id/nav_bird_facts"
-		android:icon="@mipmap/bird_fact"
-        android:fontFamily="sans-serif-condensed-light"
-        android:title="Bird Facts"/>
-    <item
         android:id="@+id/nav_go_birding"
         android:icon="@android:drawable/ic_dialog_map"
         android:fontFamily="sans-serif-condensed-light"
-        android:title="Explore"/>
+        android:title="Go Birding"/>
     <item
-        android:id="@+id/nav_blogs"
-        android:icon="@mipmap/posts"
+        android:id="@+id/nav_view_birds"
+        android:icon="@mipmap/origami"
         android:fontFamily="sans-serif-condensed-light"
-        android:title="Community"/>
+        android:title="@string/my_observations"/>
 </menu>

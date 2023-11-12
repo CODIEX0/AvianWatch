@@ -67,7 +67,7 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
                     likes.text = updatedLikesCount.toString()
 
                     // Update the likes count in the database
-                    updatePostLikes(post.pId, userHasLiked, updatedLikesCount) { success ->
+                    updatePostLikes(post.pId, post.userHasLiked, updatedLikesCount) { success ->
                         if (success) {
                             // Likes updated successfully
                             println("Likes and status updated successfully")
@@ -78,8 +78,6 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
                     }
                 }
             }
-
-
         }
 
         init {
