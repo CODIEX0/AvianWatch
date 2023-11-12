@@ -1,34 +1,32 @@
 package com.example.avianwatch
 
-
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.avianwatch.databinding.ActivityMainBinding
 import com.example.avianwatch.fragments.BirdFactsFragment
 import com.example.avianwatch.fragments.PostsFragment
 import com.example.avianwatch.fragments.GoBirdingFragment
 import com.example.avianwatch.fragments.HomeFragment
 import com.example.avianwatch.fragments.ObservationListFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), OnCardClickListener{
-    private lateinit var bottomNav: BottomNavigationView
-    lateinit var txtTitle: TextView
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        txtTitle = findViewById(R.id.txtTitle)
+        binding.txtTitle.setText("Dashboard")
 
         //setup the bottom navigation bar
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
-        bottomNav = findViewById(R.id.bottom_navigation)
-        bottomNav.setupWithNavController(navController)
+
+        binding.bottomNavigation.setupWithNavController(navController)
 
         // as soon as the application opens the first fragment should
         // be shown to the user in this case it is the Home Fragment
@@ -36,7 +34,7 @@ class MainActivity : AppCompatActivity(), OnCardClickListener{
         replaceFragment(fragment)
 
         //change the fragment every time the user presses a different bottom navigation button
-        bottomNav.setOnNavigationItemSelectedListener { menuItem ->
+        binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             // By using switch we can easily get the
             // selected fragment by using the id
             lateinit var selectedFragment: Fragment
@@ -78,7 +76,7 @@ class MainActivity : AppCompatActivity(), OnCardClickListener{
     }
 
     fun updateTitle(newText: String) {
-        txtTitle.text = newText
+        binding.txtTitle.setText(newText)
     }
 
     //method used to replace the current fragment with the fragment passed in the parameters

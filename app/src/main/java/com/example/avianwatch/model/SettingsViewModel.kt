@@ -14,8 +14,6 @@ class SettingsViewModel: ViewModel() {
     val maxRadiusProgress: LiveData<Int>
         get() = _maxRadiusProgress
 
-    // Constructor or initialization code for ViewModel
-
     // Function to update maxRadiusText based on maxRadiusSeekBar progress
     fun updateMaxRadiusText(progress: Int) {
         val text = progress.toString() // Customize the text format as needed
