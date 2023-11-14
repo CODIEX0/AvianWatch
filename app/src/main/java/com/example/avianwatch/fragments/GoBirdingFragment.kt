@@ -100,8 +100,9 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         mainActivity.updateTitle("Go Birding")
 
         // Initialize map fragment
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        val mapView = binding.root.findViewById(R.id.mapView) as MapView
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(this)
 
         // Initialize the FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -244,7 +245,8 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
 
                 // Create a PolylineOptions to define the appearance of the polyline
                 val options = PolylineOptions()
-                    .color(Color.BLUE)
+                    .color(Color.GREEN)
+                    .width(3f)
 
                 // Iterate through the decoded points and add them to the PolylineOptions
                 for (point in points) {
@@ -397,12 +399,39 @@ class GoBirdingFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView.onPause()
+    }
+
     override fun onStop() {
         super.onStop()
-        // Stop location updates
-        if (::fusedLocationClient.isInitialized && ::locationCallback.isInitialized) {
-            fusedLocationClient.removeLocationUpdates(locationCallback)
-        }
+        binding.mapView.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapView.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState)
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        binding.mapView.onLowMemory()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
