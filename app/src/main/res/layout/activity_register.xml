@@ -196,4 +196,11 @@
         android:textSize="17sp"
         android:layout_marginBottom="5sp"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
+
 </androidx.appcompat.widget.LinearLayoutCompat>

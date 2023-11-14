@@ -17,6 +17,12 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+/* Code Attribution
+   Title: Data Binding and View Binding in Android Studio using Kotlin | Android Knowledge
+   Link: https://www.youtube.com/watch?v=1V5g1qd8ToQ
+   Author: Android Knowledge
+   Date: 2023
+*/
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
@@ -59,8 +65,6 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.edtEmail.text.toString()
             val password = binding.etPassWord.text.toString()
             validateLogin(email, password)
-            //val intent = Intent(this, MainActivity::class.java)
-            //startActivity(intent)
         }
 
         val imgIcon: ImageView = findViewById(R.id.imgIcon)
