@@ -84,7 +84,7 @@ class ObservationListFragment : Fragment(), ObservationAdapter.OnItemClickListen
             try {
                 // Create an instance of an ObservationAdapter and pass the OnItemClickListener
                 val observationAdapter = ObservationAdapter(Global.observations)
-                observationAdapter.setOnItemClickListener(this)
+                //observationAdapter.setOnItemClickListener(this)
                 // Set the adapter to the RecyclerView
                 lstBirds.adapter = adapter
             } catch (e: Exception) {

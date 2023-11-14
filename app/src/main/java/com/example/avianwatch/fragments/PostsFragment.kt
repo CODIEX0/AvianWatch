@@ -65,7 +65,7 @@ class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
             try{
                 // Create an instance of PlantAdapter and pass the OnItemClickListener
                 val adapter = PostAdapter(Global.posts)
-                adapter.setOnItemClickListener(this)
+                //adapter.setOnItemClickListener(this)
                 // Set the adapter to the RecyclerView
                 lstPosts.adapter = adapter
             }catch (e:Exception){
