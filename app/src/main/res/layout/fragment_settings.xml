@@ -28,13 +28,13 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="4dp"
-        android:text="Settings"
-        android:textStyle="bold"
+        android:text="Map Settings"
         android:textColor="@color/background_color"
         android:textSize="30dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/bottom_view"
         app:layout_constraintEnd_toEndOf="@+id/bottom_view"
-        app:layout_constraintHorizontal_bias="0.607"
+        app:layout_constraintHorizontal_bias="0.649"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
