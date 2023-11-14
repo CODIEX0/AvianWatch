@@ -63,7 +63,6 @@
             android:textStyle="bold"
             android:background="#00FFFFFF"
             android:hint="@string/email"
-            android:text="cobe@gmail.com"
             android:inputType="textEmailAddress"
             android:textColor="@color/text_color"
             android:textColorHint="#5E000000" />
@@ -96,7 +95,6 @@
             android:textStyle="bold"
             android:background="#00FFFFFF"
             android:hint="@string/password"
-            android:text="123456"
             android:inputType="textPassword"
             android:textColor="@color/text_color"
             android:textColorHint="#5E000000" />

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.ViewObservationFragment"
+    android:orientation="vertical"
+    android:background="@color/background_color"
+    android:weightSum="2">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_marginBottom="12sp"
+            android:text="Observation"
+            android:fontFamily="sans-serif-condensed-light"
+            android:textColor="@color/text_color"
+            android:textSize="70dp"
+            android:textFontWeight="400"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="350dp"
+            android:layout_height="1sp"
+            android:layout_marginBottom="11sp"
+            android:background="@color/text_color" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BIRD SPECIES: "
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/text_color"
+                android:textSize="28dp"
+                android:textStyle="bold"
+                android:layout_marginRight="8sp"/>
+
+            <TextView
+                android:id="@+id/txtBirdName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:text="--bird name--"
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/text_color"
+                android:textSize="26dp"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DATE: "
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/text_color"
+                android:textSize="28dp"
+                android:textStyle="bold"
+                android:layout_marginRight="8sp"/>
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:text="--date--"
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/text_color"
+                android:textSize="26dp"
+                android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LOACTION: "
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/text_color"
+                android:textSize="28dp"
+                android:textStyle="bold"
+                android:layout_marginRight="8sp"/>
+
+            <TextView
+                android:id="@+id/txtLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:text="--location--"
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/text_color"
+                android:textSize="26dp"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NOTES: "
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/text_color"
+                android:textSize="28dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/txtNotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:text="--notes--"
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/text_color"
+                android:textSize="26dp"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgObservation"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginBottom="11sp"
+            android:scaleType="centerCrop"
+            android:background="@android:drawable/ic_menu_gallery"
+            android:padding="5dp"
+            app:shapeAppearanceOverlay="@style/circular"
+            app:strokeColor="@color/text_color"
+            app:strokeWidth="5dp"
+            tools:visibility="visible"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/text_color"
+                android:drawableEnd="@android:drawable/ic_menu_delete"
+                android:text="Delete"
+                android:textSize="19dp"
+                android:layout_marginRight="50dp"/>
+
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/text_color"
+                android:drawableEnd="@android:drawable/ic_menu_edit"
+                android:text="Edit"
+                android:textSize="19dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

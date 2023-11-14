@@ -1,6 +1,8 @@
 package com.example.avianwatch.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,8 +50,23 @@ class Personal_Settings_Fragment : Fragment() {
             usernameEditText.setText(currentUser.username)
             emailEditText.setText(currentUser.email)
 
-
         }
+
+        // Set a TextChangedListener for emailEditText
+        emailEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // Do nothing
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Check email availability as the user types
+                checkEmailAvailability(s.toString())
+            }
+        })
 
         // Set a click listener for the Save button
         saveButton.setOnClickListener {
@@ -105,15 +122,22 @@ class Personal_Settings_Fragment : Fragment() {
     }
 
     private fun checkEmailAvailability(email: String) {
-        AuthUtils.checkEmailAvailability(email) { isAvailable, errorMessage ->
-            requireActivity().runOnUiThread {
-                if (isAvailable) {
-                    // Email is available, proceed
-                    emailEditText.error = null
-                } else {
-                    // Display error message
-                    emailEditText.error = errorMessage
-                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+        val currentEmail = currentUser.email
+
+        // Check if the entered email is the same as the current user's email
+        if (email == currentEmail) {
+            // Email is the same as the current user's email, proceed
+            emailEditText.error = null
+        } else {
+            AuthUtils.checkEmailAvailability(email) { isAvailable, errorMessage ->
+                requireActivity().runOnUiThread {
+                    if (isAvailable) {
+                        // Email is available, proceed
+                        emailEditText.error = null
+                    } else {
+                        // Display error message
+                        emailEditText.error = errorMessage
+                    }
                 }
             }
         }

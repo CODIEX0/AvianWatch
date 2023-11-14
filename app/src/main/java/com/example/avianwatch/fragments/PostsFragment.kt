@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.MainActivity
@@ -22,11 +23,6 @@ import com.example.avianwatch.objects.Global
 
 class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
     lateinit var post: Post
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +65,7 @@ class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
             try{
                 // Create an instance of PlantAdapter and pass the OnItemClickListener
                 val adapter = PostAdapter(Global.posts)
-                adapter.setOnItemClickListener(this)
+                //adapter.setOnItemClickListener(this)
                 // Set the adapter to the RecyclerView
                 lstPosts.adapter = adapter
             }catch (e:Exception){
@@ -83,8 +79,11 @@ class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
         // Handle the click event and navigate to a different fragment
         //Add data to bundle
         val bundle = Bundle()
+        bundle.putString("postId", post.pId)
+        bundle.putString("userID", post.userID)
         bundle.putString("user_name", post.userName)
         bundle.putString("text", post.text)
+        bundle.putBoolean("has_liked", post.userHasLiked)
         bundle.putString("likes", post.likes.toString())
         bundle.putString("image", post.imageString)
 
@@ -93,7 +92,7 @@ class PostsFragment : Fragment(), PostAdapter.OnItemClickListener {
             fragment.arguments = bundle
 
             //Navigate to fragment, passing bundle
-            //findNavController().navigate(R.id.action_ObservationListFragment_to_ViewPlantFragment, bundle)
+            findNavController().navigate(R.id.action_PostsFragment_to_ViewPostFragment, bundle)
         }catch (e:Exception){
             Toast.makeText(requireContext(),e.message, Toast.LENGTH_SHORT).show()
             Log.d(ContentValues.TAG, e.message.toString())
