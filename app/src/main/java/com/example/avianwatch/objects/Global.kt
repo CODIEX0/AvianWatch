@@ -115,5 +115,5 @@ object Global {
     var eBirdApiKey = "e7nbn16ihfum"
 
     //google maps API key
-    var googleMapsApiKey = "AIzaSyAv9rGpt3jZ3DlHL5JUdiXzG5QfQCcreFE"
+    var googleMapsApiKey = "YOUR API KEY HERE"
 }
