@@ -16,17 +16,17 @@
         <!--google maps API key-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAv9rGpt3jZ3DlHL5JUdiXzG5QfQCcreFE" />
+            android:value="YOUR_API_KEY" />
 
         <activity
             android:name=".MainActivity"
             android:exported="false"/>
         <activity
-            android:name=".LoginActivity"
+            android:name=".RegisterActivity"
             android:exported="false" />
         <!--set the register activity as the start up screen-->
         <activity
-            android:name=".RegisterActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

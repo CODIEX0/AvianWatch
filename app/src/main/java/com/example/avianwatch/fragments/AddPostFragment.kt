@@ -9,13 +9,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.avianwatch.MainActivity
 import com.example.avianwatch.data.Post
 import com.example.avianwatch.databinding.FragmentAddPostBinding
 import com.example.avianwatch.objects.FirebaseManager
 import com.example.avianwatch.objects.Global
 import com.example.avianwatch.objects.Image.convertImageToBase64
 import com.github.dhaval2404.imagepicker.ImagePicker
+import java.util.UUID
 
+/* Code Attribution
+   Title: How to Use the Kotlin lateinit Modifier
+   Link: https://www.youtube.com/watch?v=G0iWHIDdMKs
+   Author: Donn Felker
+   Date: 2021
+*/
 class AddPostFragment : Fragment() {
     lateinit var binding: FragmentAddPostBinding
     val REQUEST_IMAGE_CAPTURE = 100
@@ -30,6 +38,9 @@ class AddPostFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentAddPostBinding.inflate(inflater, container, false)
+
+        val mainActivity = activity as MainActivity
+        mainActivity.updateTitle("Add Post")
 
         binding.btnCamera.setOnClickListener {
             ImagePicker.with(this)
@@ -52,9 +63,11 @@ class AddPostFragment : Fragment() {
         // Update the global users list
         val post = Post(
             Global.currentUser?.uid.toString(), //Store UID to create relationship
+            UUID.randomUUID().toString(),
             Global.currentUser?.username.toString(),
             binding.etText.text.toString(),
             0,
+            false,
             imageData
         )
         Global.posts.add(post)

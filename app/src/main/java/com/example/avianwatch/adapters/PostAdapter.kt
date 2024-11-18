@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.avianwatch.R
 import com.example.avianwatch.data.Post
 import com.example.avianwatch.objects.FirebaseManager
+import com.example.avianwatch.objects.FirebaseManager.getPostLikesCount
+import com.example.avianwatch.objects.FirebaseManager.getPostLikesStatus
+import com.example.avianwatch.objects.FirebaseManager.updatePostLikes
 import com.example.avianwatch.objects.Image
 
 class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
@@ -36,6 +39,8 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
         fun bind(post: Post) {
             user_name.text = post.userName
             text.text = post.text
+            likes.text = post.likes.toString()
+
             if (post.imageString.equals("")) {
                 image.visibility = View.INVISIBLE
             } else {
@@ -44,29 +49,32 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
             }
 
             like.setOnClickListener {
-                if (userHasLiked) {
-                    // User has already liked, unlike the post
-                    likesCount--
-                } else {
-                    // User has not liked, like the post
-                    likesCount++
-                }
-
                 // Toggle the like status
                 userHasLiked = !userHasLiked
 
-                // Update the like button state
-                updateLikeButtonState()
+                // Update the like button's background resource based on user's like status
+                like.setBackgroundResource(if (userHasLiked) R.mipmap.liked else R.mipmap.like)
 
-                // Update the likes count display
-                likes.text = likesCount.toString()
+                // Calculate the change in likes count
+                val likesChange = if (userHasLiked) 1 else -1
 
-                FirebaseManager.updateLikes(likes.text.toString().toInt()){isSuccess -> //Use callback to wait for results
-                    if (isSuccess)
-                    {
+                // First, fetch the current likes count
+                getPostLikesCount(post.pId) { currentLikesCount ->
+                    // Calculate the new likes count
+                    val updatedLikesCount = currentLikesCount + likesChange
 
-                    } else {
+                    // Update the likes count display
+                    likes.text = updatedLikesCount.toString()
 
+                    // Update the likes count in the database
+                    updatePostLikes(post.pId, post.userHasLiked, updatedLikesCount) { success ->
+                        if (success) {
+                            // Likes updated successfully
+                            println("Likes and status updated successfully")
+                        } else {
+                            // Failed to update likes
+                            println("Failed to update likes")
+                        }
                     }
                 }
             }

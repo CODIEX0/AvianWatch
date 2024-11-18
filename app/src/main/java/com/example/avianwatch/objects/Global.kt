@@ -1,5 +1,6 @@
 package com.example.avianwatch.objects
 
+import android.location.Location
 import com.example.avianwatch.R
 import com.example.avianwatch.data.BirdFact
 import com.example.avianwatch.data.BirdObservation
@@ -10,6 +11,9 @@ import com.example.avianwatch.data.RouteData
 import com.example.avianwatch.data.StepData
 import com.example.avianwatch.data.User
 import com.example.avianwatch.data.UserPreferences
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 
 //Singleton class for storing live data
@@ -24,6 +28,9 @@ object Global {
     var observations: MutableList<BirdObservation> = mutableListOf()
     var hotspots: MutableList<Hotspot> = mutableListOf()
     var hotspotsWithMarker: MutableList<HotspotWithMarker> = mutableListOf()
+    lateinit var currentLocation: Location
+    lateinit var liveLocation: MarkerOptions
+    lateinit var selectedBirdName: String
 
 
     //list of bird facts with corresponding image resource IDs
@@ -78,6 +85,35 @@ object Global {
         )
     )
 
+
+    //list of bird species
+    val birdSpecies = listOf(
+        "Sparrow", "Robin", "Cardinal", "Blue Jay", "Hummingbird",
+        "Eagle", "Hawk", "Owl", "Pelican", "Pigeon",
+        "Crow", "Finch", "Woodpecker", "Seagull", "Falcon",
+        "Swallow", "Albatross", "Kingfisher", "Parrot", "Toucan",
+        "Penguin", "Heron", "Warbler", "Osprey", "Quail",
+        "Wren", "Stork", "Egret", "Nuthatch", "Grosbeak",
+        "Black-capped Chickadee", "American Goldfinch", "Northern Flicker", "Mallard", "Bald Eagle",
+        "Common Loon", "White-crowned Sparrow", "Eastern Bluebird", "Western Bluebird", "Northern Mockingbird",
+        "Scarlet Tanager", "Northern Saw-whet Owl", "Black-throated Sparrow", "Black-crowned Night-Heron", "Ruby-crowned Kinglet",
+        "Golden-crowned Kinglet", "Mountain Bluebird", "Black-capped Vireo", "White-eyed Vireo", "Yellow Warbler",
+        "Hooded Warbler", "American Redstart", "Black-and-white Warbler", "Yellow-rumped Warbler", "Cerulean Warbler",
+        "Black-throated Blue Warbler", "Prothonotary Warbler", "Louisiana Waterthrush", "Northern Waterthrush", "Common Yellowthroat",
+        "Chestnut-sided Warbler", "Blackpoll Warbler", "Bay-breasted Warbler", "Blackburnian Warbler", "Palm Warbler",
+        "Pine Warbler", "Yellow-throated Warbler", "Prairie Warbler", "Black-throated Green Warbler", "Canada Warbler",
+        "Wilson's Warbler", "American Tree Sparrow", "Chipping Sparrow", "Clay-colored Sparrow", "Lark Sparrow", "Lark Bunting",
+        "White-crowned Sparrow", "White-throated Sparrow", "Harris's Sparrow", "LeConte's Sparrow", "Savannah Sparrow",
+        "Song Sparrow", "Lincoln's Sparrow", "Swamp Sparrow", "Eastern Towhee", "Spotted Towhee", "American Tree Sparrow",
+        "Chipping Sparrow", "Clay-colored Sparrow", "Lark Sparrow", "Lark Bunting", "White-crowned Sparrow", "White-throated Sparrow",
+        "Harris's Sparrow", "LeConte's Sparrow", "Savannah Sparrow", "Song Sparrow", "Lincoln's Sparrow", "Swamp Sparrow",
+        "Eastern Towhee", "Spotted Towhee"
+    )
+
+
     //eBird API key
     var eBirdApiKey = "e7nbn16ihfum"
+
+    //google maps API key
+    var googleMapsApiKey = "YOUR API KEY HERE"
 }

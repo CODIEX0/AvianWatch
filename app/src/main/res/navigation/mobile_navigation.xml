@@ -11,7 +11,6 @@
         android:label="Sign Up"
         tools:layout="@layout/activity_register"/>
 
-
     <activity
         android:id="@+id/activity_Login"
         android:name="com.example.avianwatch.LoginActivity"
@@ -23,7 +22,6 @@
         android:name="com.example.avianwatch.MainActivity"
         android:label="Main"
         tools:layout="@layout/activity_main"/>
-
 
     <fragment
         android:id="@+id/navigation_home"
@@ -42,10 +40,6 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_view_birds"
             app:destination="@id/navigation_view_birds"
-            app:enterAnim="@anim/slide_in"/>
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_identify_bird"
-            app:destination="@id/navigation_add_observation_bird"
             app:enterAnim="@anim/slide_in"/>
         <action
             android:id="@+id/action_navigation_home_to_navigation_posts"
@@ -82,7 +76,7 @@
     <fragment
         android:id="@+id/navigation_add_observation_bird"
         android:name="com.example.avianwatch.fragments.ObservationFragment"
-        android:label="Identify Bird"
+        android:label="Add Bird Observation"
         tools:layout="@layout/fragment_observation" />
 
     <fragment
@@ -99,22 +93,42 @@
     <fragment
         android:id="@+id/navigation_view_birds"
         android:name="com.example.avianwatch.fragments.ObservationListFragment"
-        android:label="Aviary"
+        android:label="My Observations"
         tools:layout="@layout/fragment_observation_list" >
         <action
             android:id="@+id/action_ObservationListFragment_to_ObservationFragment"
             app:destination="@id/navigation_add_observation_bird"
             app:enterAnim="@anim/slide_in" />
+        <action
+            android:id="@+id/action_ObservationListFragment_to_ViewObservationFragment"
+            app:destination="@id/navigation_view_observation"
+            app:enterAnim="@anim/slide_in" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_view_observation"
+        android:name="com.example.avianwatch.fragments.ViewObservationFragment"
+        android:label="View Observation"
+        tools:layout="@layout/fragment_view_observation" />
+
+    <fragment
+        android:id="@+id/navigation_view_post"
+        android:name="com.example.avianwatch.fragments.ViewPostFragment"
+        android:label="View Post"
+        tools:layout="@layout/fragment_view_post" />
 
     <fragment
         android:id="@+id/navigation_posts"
         android:name="com.example.avianwatch.fragments.PostsFragment"
-        android:label="Blogs"
+        android:label="Posts"
         tools:layout="@layout/fragment_posts" >
         <action
             android:id="@+id/action_PostsFragment_to_AddPostFragment"
             app:destination="@id/navigation_add_post"
+            app:enterAnim="@anim/slide_in" />
+        <action
+            android:id="@+id/action_PostsFragment_to_ViewPostFragment"
+            app:destination="@id/navigation_view_post"
             app:enterAnim="@anim/slide_in" />
     </fragment>
 
